@@ -1,857 +1,870 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Google Sites Clone | Google Drive HTML Pages</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Google Drive HTML Loader | Tabbed Gallery with Drive Integration</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            background: #e8eaed;
-            font-family: 'Google Sans', 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
-        }
+    body {
+      background: #e8eaed;
+      font-family: 'Google Sans', 'Segoe UI', Roboto, system-ui, sans-serif;
+      min-height: 100vh;
+    }
 
-        /* Google Sites header */
-        .sites-header {
-            background: white;
-            box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 2px 6px 2px rgba(60, 64, 67, 0.15);
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-            position: relative;
-            z-index: 10;
-        }
+    /* Header */
+    .sites-header {
+      background: white;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
 
-        .logo-icon {
-            background: #1a73e8;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
+    .logo-icon {
+      background: #1a73e8;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
 
-        .site-title {
-            font-size: 1.4rem;
-            font-weight: 500;
-            letter-spacing: -0.2px;
-            color: #202124;
-        }
+    .site-title {
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: #202124;
+    }
 
-        .drive-badge {
-            background: #e8f0fe;
-            color: #1a73e8;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            margin-left: 12px;
-        }
+    .drive-badge {
+      background: #e8f0fe;
+      color: #1a73e8;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
 
-        .mock-btn {
-            background: #f8f9fa;
-            border: 1px solid #dadce0;
-            border-radius: 24px;
-            padding: 8px 20px;
-            font-size: 0.875rem;
-            color: #1a73e8;
-            font-weight: 500;
-            cursor: default;
-        }
+    /* Main container */
+    .main-container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
 
-        /* main container */
-        .main-container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
+    /* Tabs */
+    .tabs-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      background: white;
+      border-radius: 32px;
+      padding: 0.5rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+    }
 
-        /* tabs navigation */
-        .tabs-nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            background: white;
-            border-radius: 32px;
-            padding: 0.5rem;
-            margin-bottom: 1.75rem;
-            box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.1);
-        }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 10px 24px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 40px;
+      color: #5f6368;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
 
-        .tab-btn {
-            background: transparent;
-            border: none;
-            padding: 10px 24px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            font-family: inherit;
-            border-radius: 40px;
-            color: #5f6368;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+    .tab-btn:hover {
+      background: #f1f3f4;
+    }
 
-        .tab-btn:hover {
-            background: #f1f3f4;
-        }
+    .tab-btn.active {
+      background: #e8f0fe;
+      color: #1a73e8;
+    }
 
-        .tab-btn.active {
-            background: #e8f0fe;
-            color: #1a73e8;
-        }
+    /* Two column layout */
+    .dashboard-split {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
 
-        /* two column layout */
-        .dashboard-split {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-        }
+    .middle-gallery {
+      flex: 3;
+      min-width: 260px;
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+      padding: 1.5rem;
+    }
 
-        /* MIDDLE PANEL: image gallery */
-        .middle-gallery {
-            flex: 3;
-            min-width: 260px;
-            background: white;
-            border-radius: 28px;
-            box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.1);
-            overflow: hidden;
-            padding: 1.5rem;
-            transition: all 0.2s;
-        }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #ecedef;
+      padding-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
 
-        .section-header {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 8px;
-            border-bottom: 1px solid #ecedef;
-            padding-bottom: 0.75rem;
-        }
+    .section-header h3 {
+      font-weight: 500;
+      font-size: 1.25rem;
+      color: #202124;
+    }
 
-        .section-header h3 {
-            font-weight: 500;
-            font-size: 1.25rem;
-            color: #202124;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .filter-badge {
+      background: #f1f3f4;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      color: #5f6368;
+    }
 
-        .active-filter-badge {
-            background: #f1f3f4;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            color: #5f6368;
-        }
+    /* Google Drive Info Panel */
+    .drive-info {
+      background: #e8f0fe;
+      border-radius: 20px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #cce4ff;
+    }
 
-        /* image grid */
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1.5rem;
-        }
+    .drive-info h4 {
+      color: #1a73e8;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        .image-panel {
-            background: #ffffff;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: all 0.25s ease;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #f0f0f0;
-        }
+    .drive-info code {
+      background: white;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
 
-        .image-panel:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(60, 64, 67, 0.2);
-            border-color: #dadce0;
-        }
+    .drive-info pre {
+      background: #1e1e2e;
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-size: 0.75rem;
+      margin: 8px 0;
+    }
 
-        .img-container {
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
-            background: #f8f9fa;
-        }
+    /* Image grid */
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
 
-        .img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
+    .image-panel {
+      background: #ffffff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border: 1px solid #f0f0f0;
+    }
 
-        .image-panel:hover .img-container img {
-            transform: scale(1.03);
-        }
+    .image-panel:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(60,64,67,0.2);
+    }
 
-        .panel-caption {
-            padding: 0.9rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-        }
+    .img-container {
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #f8f9fa;
+    }
 
-        .panel-title {
-            font-weight: 500;
-            color: #202124;
-            font-size: 0.9rem;
-        }
+    .img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
 
-        .read-badge {
-            font-size: 0.7rem;
-            background: #e8f0fe;
-            color: #1a73e8;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-weight: 500;
-        }
+    .image-panel:hover .img-container img {
+      transform: scale(1.03);
+    }
 
-        .drive-badge-icon {
-            background: #fef7e0;
-            color: #e37400;
-        }
+    .panel-caption {
+      padding: 0.9rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        /* RIGHT PANEL: chapters */
-        .right-chapters {
-            flex: 1.2;
-            min-width: 250px;
-            background: white;
-            border-radius: 28px;
-            box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.1);
-            padding: 1.5rem;
-            align-self: start;
-            position: sticky;
-            top: 1rem;
-        }
+    .panel-title {
+      font-weight: 500;
+      color: #202124;
+      font-size: 0.9rem;
+    }
 
-        .chapters-title {
-            font-weight: 500;
-            font-size: 1.1rem;
-            color: #202124;
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-left: 4px solid #1a73e8;
-            padding-left: 14px;
-        }
+    .drive-badge-icon {
+      font-size: 0.7rem;
+      background: #e8f0fe;
+      color: #1a73e8;
+      padding: 4px 10px;
+      border-radius: 50px;
+    }
 
-        .chapters-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
+    /* Right panel chapters */
+    .right-chapters {
+      flex: 1.2;
+      min-width: 250px;
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+      padding: 1.5rem;
+      align-self: start;
+      position: sticky;
+      top: 1rem;
+    }
 
-        .chapter-card {
-            background: #f8f9fa;
-            border-radius: 20px;
-            padding: 0.9rem 1rem;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: 1px solid #ecedef;
-        }
+    .chapters-title {
+      font-weight: 500;
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+      border-left: 4px solid #1a73e8;
+      padding-left: 14px;
+      color: #202124;
+    }
 
-        .chapter-card:hover {
-            background: #e8f0fe;
-            transform: translateX(6px);
-        }
+    .chapters-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
 
-        .chapter-card.active-chapter {
-            background: #e8f0fe;
-            border-left: 4px solid #1a73e8;
-        }
+    .chapter-card {
+      background: #f8f9fa;
+      border-radius: 20px;
+      padding: 0.9rem 1rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: 1px solid #ecedef;
+    }
 
-        .chapter-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-            color: #1a0d00;
-            margin-bottom: 6px;
-        }
+    .chapter-card:hover {
+      background: #e8f0fe;
+      transform: translateX(6px);
+    }
 
-        .chapter-icon {
-            font-size: 1.3rem;
-        }
+    .chapter-card.active-chapter {
+      background: #e8f0fe;
+      border-left: 4px solid #1a73e8;
+    }
 
-        .chapter-desc {
-            font-size: 0.75rem;
-            color: #5f6368;
-            line-height: 1.3;
-            margin-left: 30px;
-        }
+    .chapter-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
 
-        .reset-filter {
-            margin-top: 1.2rem;
-            text-align: center;
-        }
+    .chapter-icon {
+      font-size: 1.3rem;
+    }
 
-        .reset-btn {
-            background: transparent;
-            border: 1px solid #dadce0;
-            border-radius: 40px;
-            padding: 6px 16px;
-            font-size: 0.75rem;
-            color: #5f6368;
-            cursor: pointer;
-            font-weight: 500;
-        }
+    .chapter-desc {
+      font-size: 0.75rem;
+      color: #5f6368;
+      margin-left: 30px;
+    }
 
-        .reset-btn:hover {
-            background: #f1f3f4;
-            border-color: #1a73e8;
-            color: #1a73e8;
-        }
+    .reset-filter {
+      margin-top: 1.2rem;
+      text-align: center;
+    }
 
-        /* Info panel for Google Drive instructions */
-        .drive-info {
-            background: #e8f0fe;
-            border-radius: 16px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.8rem;
-        }
+    .reset-btn {
+      background: transparent;
+      border: 1px solid #dadce0;
+      border-radius: 40px;
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      color: #5f6368;
+      cursor: pointer;
+    }
 
-        .drive-info h4 {
-            color: #1a73e8;
-            margin-bottom: 8px;
-        }
+    .reset-btn:hover {
+      background: #f1f3f4;
+      border-color: #1a73e8;
+      color: #1a73e8;
+    }
 
-        .drive-info code {
-            background: white;
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-        }
+    /* Modal for loading Google Drive HTML */
+    .drive-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.2s, opacity 0.2s;
+    }
 
-        /* ========= IFRAME MODAL FOR GOOGLE DRIVE HTML ========= */
-        .drive-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0.2s, opacity 0.2s;
-        }
+    .drive-modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
 
-        .drive-modal.active {
-            visibility: visible;
-            opacity: 1;
-        }
+    .modal-container {
+      background: white;
+      width: 90%;
+      max-width: 1100px;
+      height: 85vh;
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.25s ease-out;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
+    }
 
-        .modal-container {
-            background: white;
-            width: 90%;
-            max-width: 1000px;
-            height: 85vh;
-            border-radius: 28px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            animation: slideUp 0.25s ease-out;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-        }
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
 
-        @keyframes slideUp {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
+    .modal-header {
+      padding: 1rem 1.5rem;
+      background: #f8f9fa;
+      border-bottom: 1px solid #ecedef;
+      border-radius: 28px 28px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+    .modal-header h3 {
+      font-weight: 500;
+      color: #202124;
+    }
 
-        .modal-header {
-            padding: 1rem 1.5rem;
-            background: #f8f9fa;
-            border-bottom: 1px solid #ecedef;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #5f6368;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .modal-header h3 {
-            font-weight: 500;
-            color: #202124;
-        }
+    .close-modal:hover {
+      background: #e8eaed;
+    }
 
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: #5f6368;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .modal-content {
+      flex: 1;
+      overflow: auto;
+    }
 
-        .close-modal:hover {
-            background: #e8eaed;
-        }
+    .modal-content iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
 
-        .modal-content {
-            flex: 1;
-            overflow: auto;
-        }
+    .sites-footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      padding: 1.5rem;
+      color: #5f6368;
+      font-size: 0.8rem;
+      border-top: 1px solid #dadce0;
+    }
 
-        .modal-content iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+    .fade-in {
+      animation: fadeSlide 0.25s ease-out;
+    }
 
-        .sites-footer {
-            margin-top: 2.5rem;
-            text-align: center;
-            padding: 1.5rem;
-            border-top: 1px solid #dadce0;
-            color: #5f6368;
-            font-size: 0.8rem;
-        }
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        .fade-in {
-            animation: fadeSlide 0.25s ease-out;
-        }
+    @media (max-width: 760px) {
+      .dashboard-split {
+        flex-direction: column-reverse;
+      }
+      .right-chapters {
+        position: static;
+      }
+    }
 
-        @keyframes fadeSlide {
-            from {
-                opacity: 0;
-                transform: translateY(6px);
-            }
+    .empty-message {
+      text-align: center;
+      padding: 2rem;
+      background: #f8f9fa;
+      border-radius: 24px;
+      color: #5f6368;
+      grid-column: 1 / -1;
+    }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    .url-input-group {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-        @media (max-width: 760px) {
-            .main-container {
-                padding: 0 1rem;
-            }
+    .url-input-group input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #dadce0;
+      border-radius: 24px;
+      font-family: monospace;
+      font-size: 0.75rem;
+    }
 
-            .dashboard-split {
-                flex-direction: column-reverse;
-            }
-
-            .right-chapters {
-                position: static;
-            }
-        }
-
-        .empty-message {
-            text-align: center;
-            padding: 2rem;
-            background: #f8f9fa;
-            border-radius: 24px;
-            color: #5f6368;
-            grid-column: 1 / -1;
-        }
-    </style>
+    .url-input-group button {
+      background: #1a73e8;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 24px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-
 <body>
 
-    <header class="sites-header">
-        <div class="logo-area" id="homeLogo">
-            <div class="logo-icon">📘</div>
-            <div class="site-title">GuideHub · Google Drive Pages</div>
-            <span class="drive-badge">📁 linked to Drive HTML</span>
+<header class="sites-header">
+  <div class="logo-area" id="homeLogo">
+    <div class="logo-icon">☁️</div>
+    <div class="site-title">Google Drive · HTML Loader</div>
+    <span class="drive-badge">📁 Loads HTML from Drive</span>
+  </div>
+  <div class="mock-btn">Live</div>
+</header>
+
+<main class="main-container">
+  <div class="tabs-nav" id="tabNavigation">
+    <button class="tab-btn active" data-tab="tab-nature">🌿 Nature</button>
+    <button class="tab-btn" data-tab="tab-urban">🏙️ Urban</button>
+    <button class="tab-btn" data-tab="tab-creative">🎨 Creative</button>
+  </div>
+
+  <div class="dashboard-split">
+    <div class="middle-gallery">
+      <div class="section-header">
+        <h3>📸 Image Gallery</h3>
+        <div id="filterIndicator" class="filter-badge">✨ All images</div>
+      </div>
+
+      <!-- Google Drive Setup Instructions -->
+      <div class="drive-info">
+        <h4>☁️ <span>Load HTML Files from Google Drive</span></h4>
+        <p><strong>Important:</strong> Use the <code>/preview</code> URL format, NOT <code>/view</code>!</p>
+        
+        <p><strong>How to get the correct URL:</strong></p>
+        <ol style="margin-left: 1.2rem; margin-bottom: 8px;">
+          <li>Upload your HTML file to Google Drive</li>
+          <li>Right-click → Share → "Anyone with the link can view"</li>
+          <li>Click "Copy link" — it looks like: <code>https://drive.google.com/file/d/FILE_ID/view</code></li>
+          <li><strong>CHANGE</strong> <code>/view</code> to <code>/preview</code></li>
+          <li>Result: <code>https://drive.google.com/file/d/FILE_ID/preview</code> ✅</li>
+        </ol>
+        
+        <div class="url-input-group">
+          <input type="text" id="testDriveUrl" placeholder="Paste your Google Drive /preview URL here to test...">
+          <button id="testDriveBtn">🔗 Test Load</button>
         </div>
-        <div class="header-actions">
-            <div class="mock-btn">Explore</div>
-            <div class="mock-btn">Share</div>
-        </div>
-    </header>
+      </div>
 
-    <main class="main-container">
-        <div class="tabs-nav" id="tabNavigation">
-            <button class="tab-btn active" data-tab="tab-nature">🌿 Nature & Outdoors</button>
-            <button class="tab-btn" data-tab="tab-urban">🏙️ Urban Exploration</button>
-            <button class="tab-btn" data-tab="tab-creative">🎨 Creative & Design</button>
-        </div>
-
-        <div class="dashboard-split">
-            <div class="middle-gallery" id="middleGallery">
-                <div class="section-header">
-                    <h3>📸 <span>Image Gallery</span></h3>
-                    <div id="filterIndicator" class="active-filter-badge">✨ All images</div>
-                </div>
-
-                <!-- Google Drive Info Panel -->
-                <div class="drive-info">
-                    <h4>📁 Google Drive Integration</h4>
-                    <p>Each image links to a separate HTML file stored in Google Drive. To use your own:</p>
-                    <ol style="margin-left: 1.2rem; margin-top: 4px;">
-                        <li>Upload HTML files to Google Drive</li>
-                        <li>Share → "Anyone with the link can view"</li>
-                        <li>Copy <strong>File ID</strong> from URL:
-                            <code>https://drive.google.com/file/d/FILE_ID/view</code>
-                        </li>
-                        <li>Replace the <code>driveFileId</code> in the data below</li>
-                    </ol>
-                </div>
-
-                <div id="imageGridContainer" class="image-grid"></div>
-            </div>
-
-            <div class="right-chapters">
-                <div class="chapters-title">
-                    <span>📖</span> Guide chapters
-                    <span style="font-size: 0.7rem; background:#f1f3f4; padding:2px 8px; border-radius:40px;">click to
-                        filter</span>
-                </div>
-                <div id="chaptersListContainer" class="chapters-list"></div>
-                <div class="reset-filter">
-                    <button id="resetFilterBtn" class="reset-btn">⟳ Show all images</button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer class="sites-footer">
-        © 2025 GuideHub | Click any image → opens separate HTML page (hosted on Google Drive) inside this site
-    </footer>
-
-    <!-- MODAL for displaying Google Drive HTML files -->
-    <div id="driveModal" class="drive-modal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3 id="modalTitle">Loading from Google Drive...</h3>
-                <button class="close-modal" id="closeModalBtn">✕</button>
-            </div>
-            <div class="modal-content">
-                <iframe id="driveIframe" src="about:blank" title="Google Drive HTML Page"></iframe>
-            </div>
-        </div>
+      <div id="imageGridContainer" class="image-grid"></div>
     </div>
 
-    <script>
-        // ============================================================
-        // GOOGLE DRIVE HTML INTEGRATION
-        // Each image item has a "driveFileId" - the ID of an HTML file
-        // stored in Google Drive. When clicked, it opens in an iframe.
-        // 
-        // HOW TO GET FILE ID:
-        // 1. Upload your HTML file to Google Drive
-        // 2. Right-click → Share → General access: "Anyone with the link"
-        // 3. Copy link: https://drive.google.com/file/d/XXXXXXXXXXXX/view
-        // 4. The XXXXXXXXXXXX is your FILE ID
-        // 
-        // The URL format for embedding: 
-        // https://drive.google.com/file/d/FILE_ID/preview
-        // ============================================================
+    <div class="right-chapters">
+      <div class="chapters-title">📖 Guide chapters</div>
+      <div id="chaptersListContainer" class="chapters-list"></div>
+      <div class="reset-filter">
+        <button id="resetFilterBtn" class="reset-btn">⟳ Show all images</button>
+      </div>
+    </div>
+  </div>
+</main>
 
-        // Helper function to get Google Drive embed URL from file ID
-        function getDriveEmbedUrl(fileId) {
-            return `https://drive.google.com/file/d/${fileId}/preview`;
+<footer class="sites-footer">
+  © 2025 Google Drive HTML Loader | Click any image → loads HTML from Google Drive using /preview URL
+</footer>
+
+<!-- Modal for Google Drive HTML -->
+<div id="driveModal" class="drive-modal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 id="modalTitle">Loading from Google Drive...</h3>
+      <button class="close-modal" id="closeModalBtn">✕</button>
+    </div>
+    <div class="modal-content">
+      <iframe id="driveIframe" src="about:blank" title="Google Drive HTML Content"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // GOOGLE DRIVE HTML LOADER
+  // 
+  // CRITICAL: Use /preview URL, NOT /view
+  // 
+  // Correct format: https://drive.google.com/file/YOUR_FILE_ID/preview
+  // 
+  // Each image has a 'drivePreviewUrl' that points to an HTML file
+  // stored in Google Drive with public sharing enabled.
+  // ============================================================
+
+  // SAMPLE Google Drive file IDs (REPLACE WITH YOUR ACTUAL FILE IDs)
+  // To use your own files:
+  // 1. Upload HTML to Google Drive
+  // 2. Share → "Anyone with the link can view"
+  // 3. Copy file ID from URL
+  // 4. Replace the IDs below
+  
+  // EXAMPLE: If your URL is https://drive.google.com/file/d/abc123xyz/view
+  // Then file ID = "abc123xyz"
+  // Use: https://drive.google.com/file/d/abc123xyz/preview
+  
+  const sampleDriveIds = {
+    forest: "1yhonNAyVn9GGx0V1q4nwcAdsw_SX9H3T",  // ← REPLACE with your actual file ID
+    waterfall: "2YyYyYyYyYyYyYyYyYy",
+    mountain: "3ZzZzZzZzZzZzZzZzZz",
+    skyline: "4AaAaAaAaAaAaAaAaAaA",
+    metro: "5BbBbBbBbBbBbBbBbBbB",
+    design: "6CcCcCcCcCcCcCcCcCcC"
+  };
+  
+  // Helper: Build proper Google Drive preview URL from file ID
+  function getDrivePreviewUrl(fileId) {
+    if (!fileId || fileId.includes("SAMPLE") || fileId.includes("XXXXX")) {
+      return null;
+    }
+    return `https://drive.google.com/file/d/${fileId}/preview`;
+  }
+
+  // Demo HTML content for when no Drive ID is provided (shows instructions)
+  const demoHtmlContent = `<!DOCTYPE html>
+  <html>
+  <head><style>
+    body{font-family:'Google Sans',sans-serif;padding:2rem;background:#f8f9fa;text-align:center;}
+    .demo-box{max-width:700px;margin:2rem auto;background:white;border-radius:28px;padding:2rem;box-shadow:0 8px 20px rgba(0,0,0,0.1);}
+    h1{color:#1a73e8;}
+    code{background:#e8eaed;padding:4px 8px;border-radius:8px;}
+    .step{background:#e8f0fe;padding:1rem;border-radius:16px;margin:1rem 0;text-align:left;}
+    button{background:#1a73e8;color:white;border:none;padding:10px 24px;border-radius:40px;cursor:pointer;}
+  </style></head>
+  <body>
+    <div class="demo-box">
+      <h1>📁 Google Drive HTML Demo</h1>
+      <p>This is a preview. To load your own HTML from Google Drive:</p>
+      <div class="step">
+        <strong>Step 1:</strong> Upload your HTML file to Google Drive<br>
+        <strong>Step 2:</strong> Share → "Anyone with the link can view"<br>
+        <strong>Step 3:</strong> Copy the File ID from URL<br>
+        <strong>Step 4:</strong> Replace the sample ID in the data array<br>
+        <strong>Step 5:</strong> Use <code>/preview</code> instead of <code>/view</code>
+      </div>
+      <button onclick="window.parent.closeDriveModal()">Close</button>
+    </div>
+  </body>
+  </html>`;
+
+  // Data structure with Google Drive preview URLs
+  // REPLACE the fileId values with YOUR ACTUAL Google Drive file IDs
+  const siteData = {
+    "tab-nature": {
+      categoryName: "Nature",
+      chapters: [
+        { emoji: "🌲", title: "Forest & Woods", keywords: ["forest"], description: "Ancient trees & serene paths" },
+        { emoji: "💧", title: "Waterfalls", keywords: ["waterfall"], description: "Flowing waters & cascades" },
+        { emoji: "⛰️", title: "Mountains", keywords: ["mountain"], description: "High altitudes & peaks" }
+      ],
+      images: [
+        { 
+          imgUrl: "https://picsum.photos/id/104/400/260", 
+          title: "Forest Canopy Guide", 
+          tags: ["forest"],
+          // REPLACE THIS with your actual Google Drive file ID
+          driveFileId: "REPLACE_WITH_YOUR_DRIVE_FILE_ID_1",
+          pageTitle: "Forest Canopy - Complete Guide"
+        },
+        { 
+          imgUrl: "https://picsum.photos/id/29/400/260", 
+          title: "Mountain Waterfalls", 
+          tags: ["waterfall"],
+          driveFileId: "REPLACE_WITH_YOUR_DRIVE_FILE_ID_2",
+          pageTitle: "Waterfall Explorer"
+        },
+        { 
+          imgUrl: "https://picsum.photos/id/146/400/260", 
+          title: "Snowy Mountain Peak", 
+          tags: ["mountain"],
+          driveFileId: "REPLACE_WITH_YOUR_DRIVE_FILE_ID_3",
+          pageTitle: "Alpine Mountain Guide"
         }
-
-        // Sample DATA with Google Drive file IDs
-        // REPLACE THESE FILE IDs WITH YOUR ACTUAL UPLOADED HTML FILES
-        const siteData = {
-            "tab-nature": {
-                categoryName: "Nature",
-                chapters: [
-                    { emoji: "🌲", title: "Forest & Woods", keywords: ["forest", "tree", "woods"], description: "Ancient trees & serene paths" },
-                    { emoji: "💧", title: "Waterfalls", keywords: ["waterfall", "river"], description: "Flowing waters & fresh currents" },
-                    { emoji: "⛰️", title: "Mountains", keywords: ["mountain", "peak"], description: "High altitudes & dramatic views" }
-                ],
-                images: [
-                    {
-                        imgUrl: "https://picsum.photos/id/104/400/260",
-                        title: "Forest Canopy",
-                        alt: "dense forest",
-                        tags: ["forest", "tree"],
-                        driveFileId: "SAMPLE_ID_1",  // ← REPLACE WITH YOUR GOOGLE DRIVE FILE ID
-                        pageTitle: "The Ancient Forest Canopy"
-                    },
-                    {
-                        imgUrl: "https://picsum.photos/id/29/400/260",
-                        title: "Mountain Waterfall",
-                        alt: "waterfall",
-                        tags: ["waterfall", "mountain"],
-                        driveFileId: "SAMPLE_ID_2",  // ← REPLACE WITH YOUR GOOGLE DRIVE FILE ID
-                        pageTitle: "Cascading Mountain Waters"
-                    },
-                    {
-                        imgUrl: "https://picsum.photos/id/146/400/260",
-                        title: "Snowy Mountain Peak",
-                        alt: "snow mountain",
-                        tags: ["mountain", "peak"],
-                        driveFileId: "SAMPLE_ID_3",  // ← REPLACE WITH YOUR GOOGLE DRIVE FILE ID
-                        pageTitle: "Alpine Majesty"
-                    }
-                ]
-            },
-            "tab-urban": {
-                categoryName: "Urban",
-                chapters: [
-                    { emoji: "🏙️", title: "Skyscrapers", keywords: ["skyline", "tower"], description: "Modern city silhouettes" },
-                    { emoji: "🚇", title: "Transit", keywords: ["metro", "subway"], description: "Underground networks" },
-                    { emoji: "🌃", title: "Night Lights", keywords: ["neon", "night"], description: "City after dark" }
-                ],
-                images: [
-                    {
-                        imgUrl: "https://picsum.photos/id/1/400/260",
-                        title: "Downtown Skyline",
-                        alt: "skyline",
-                        tags: ["skyline", "tower"],
-                        driveFileId: "SAMPLE_ID_4",  // ← REPLACE WITH YOUR GOOGLE DRIVE FILE ID
-                        pageTitle: "Urban Skylines"
-                    },
-                    {
-                        imgUrl: "https://picsum.photos/id/91/400/260",
-                        title: "Metro Station",
-                        alt: "subway",
-                        tags: ["metro", "subway"],
-                        driveFileId: "SAMPLE_ID_5",  // ← REPLACE WITH YOUR GOOGLE DRIVE FILE ID
-                        pageTitle: "Underground Journeys"
-                    },
-                    {
-                        imgUrl: "https://picsum.photos/id/22/400/260",
-                        title: "Neon Nights",
-                        alt: "neon",
-                        tags: ["neon", "night"],
-                        driveFileId: "SAMPLE_ID_6",  // ← REPLACE WITH YOUR GOOGLE DRIVE FILE ID
-                        pageTitle: "Neon Dreams"
-                    }
-                ]
-            },
-            "tab-creative": {
-                categoryName: "Creative",
-                chapters: [
-                    { emoji: "🎨", title: "Design", keywords: ["design", "graphic"], description: "Visual identity" },
-                    { emoji: "🤖", title: "AI Art", keywords: ["ai", "digital"], description: "Machine creativity" }
-                ],
-                images: [
-                    {
-                        imgUrl: "https://picsum.photos/id/0/400/260",
-                        title: "Design Workspace",
-                        alt: "studio",
-                        tags: ["design", "graphic"],
-                        driveFileId: "SAMPLE_ID_7",  // ← REPLACE WITH YOUR GOOGLE DRIVE FILE ID
-                        pageTitle: "Creative Studio"
-                    },
-                    {
-                        imgUrl: "https://picsum.photos/id/106/400/260",
-                        title: "Abstract Gradient",
-                        alt: "abstract",
-                        tags: ["ai", "digital"],
-                        driveFileId: "https://drive.google.com/file/d/1yhonNAyVn9GGx0V1q4nwcAdsw_SX9H3T/preview", // ← REPLACE WITH YOUR GOOGLE DRIVE FILE ID
-                        pageTitle: "Generative Art & AI"
-                    }
-                ]
-            }
-        };
-
-        // DOM elements
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const imageGridContainer = document.getElementById('imageGridContainer');
-        const chaptersContainer = document.getElementById('chaptersListContainer');
-        const filterIndicator = document.getElementById('filterIndicator');
-        const resetFilterBtn = document.getElementById('resetFilterBtn');
-        const driveModal = document.getElementById('driveModal');
-        const driveIframe = document.getElementById('driveIframe');
-        const modalTitle = document.getElementById('modalTitle');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const homeLogo = document.getElementById('homeLogo');
-
-        let currentTabId = "tab-nature";
-        let activeChapterFilter = null;
-        let currentImagesArray = [];
-
-        function filterImagesByChapter(images, chapterFilter) {
-            if (!chapterFilter) return images;
-            const category = siteData[currentTabId];
-            const selectedChapter = category?.chapters.find(ch => ch.title === chapterFilter);
-            if (!selectedChapter) return images;
-            const keywords = selectedChapter.keywords || [];
-            return images.filter(img => img.tags?.some(tag => keywords.some(kw => tag.toLowerCase().includes(kw.toLowerCase()))));
+      ]
+    },
+    "tab-urban": {
+      categoryName: "Urban",
+      chapters: [
+        { emoji: "🏙️", title: "Skyscrapers", keywords: ["skyline"], description: "Modern city silhouettes" },
+        { emoji: "🚇", title: "Transit", keywords: ["metro"], description: "Underground networks" }
+      ],
+      images: [
+        { 
+          imgUrl: "https://picsum.photos/id/1/400/260", 
+          title: "Urban Skyline", 
+          tags: ["skyline"],
+          driveFileId: "REPLACE_WITH_YOUR_DRIVE_FILE_ID_4",
+          pageTitle: "City Architecture Guide"
+        },
+        { 
+          imgUrl: "https://picsum.photos/id/91/400/260", 
+          title: "Metro Station", 
+          tags: ["metro"],
+          driveFileId: "REPLACE_WITH_YOUR_DRIVE_FILE_ID_5",
+          pageTitle: "Underground Transit Systems"
         }
+      ]
+    },
+    "tab-creative": {
+      categoryName: "Creative",
+      chapters: [
+        { emoji: "🎨", title: "Design Studio", keywords: ["design"], description: "Creative process" }
+      ],
+      images: [
+        { 
+          imgUrl: "https://picsum.photos/id/0/400/260", 
+          title: "Design Workspace", 
+          tags: ["design"],
+          driveFileId: "REPLACE_WITH_YOUR_DRIVE_FILE_ID_6",
+          pageTitle: "Creative Design Guide"
+        }
+      ]
+    }
+  };
 
-        // Open Google Drive HTML page in modal
-        function openDrivePage(imageItem) {
-            if (!imageItem.driveFileId || imageItem.driveFileId === "SAMPLE_ID_1" || imageItem.driveFileId.startsWith("SAMPLE_ID")) {
-                // Demo mode - show instructions
-                modalTitle.textContent = `📄 ${imageItem.pageTitle || imageItem.title}`;
-                driveIframe.srcdoc = `
-        <!DOCTYPE html>
-        <html>
-        <head><style>
-          body { font-family: 'Google Sans', sans-serif; padding: 2rem; max-width: 800px; margin: 0 auto; background: #f8f9fa; }
-          .demo-banner { background: #e8f0fe; padding: 1rem; border-radius: 16px; margin-bottom: 1.5rem; border-left: 4px solid #1a73e8; }
-          h1 { color: #202124; }
-          code { background: #e8eaed; padding: 2px 6px; border-radius: 6px; }
-          .step { background: white; padding: 1rem; margin: 1rem 0; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        </style></head>
-        <body>
-          <div class="demo-banner">
-            <strong>📁 Google Drive HTML Demo</strong><br>
-            This is a preview of "${imageItem.title}"
-          </div>
-          <h1>${imageItem.pageTitle || imageItem.title}</h1>
-          <p>To use your own HTML files from Google Drive:</p>
-          <div class="step">
-            <strong>Step 1:</strong> Create an HTML file (like this one) and save it.
-          </div>
-          <div class="step">
-            <strong>Step 2:</strong> Upload to Google Drive → Share → "Anyone with link can view"
-          </div>
-          <div class="step">
-            <strong>Step 3:</strong> Copy the FILE ID from the URL<br>
-            <code>https://drive.google.com/file/d/YOUR_FILE_ID/view</code>
-          </div>
-          <div class="step">
-            <strong>Step 4:</strong> Replace <code>driveFileId: "SAMPLE_ID_X"</code> with your actual FILE ID
-          </div>
-          <p style="margin-top: 2rem;">✨ Once replaced, this modal will load your actual HTML page from Google Drive!</p>
-          <img src="${imageItem.imgUrl}" style="width:100%; border-radius:16px; margin-top:1rem;">
-        </body>
-        </html>
+  // DOM elements
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const imageGridContainer = document.getElementById('imageGridContainer');
+  const chaptersContainer = document.getElementById('chaptersListContainer');
+  const filterIndicator = document.getElementById('filterIndicator');
+  const resetFilterBtn = document.getElementById('resetFilterBtn');
+  const homeLogo = document.getElementById('homeLogo');
+  const driveModal = document.getElementById('driveModal');
+  const driveIframe = document.getElementById('driveIframe');
+  const modalTitle = document.getElementById('modalTitle');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const testDriveUrl = document.getElementById('testDriveUrl');
+  const testDriveBtn = document.getElementById('testDriveBtn');
+
+  let currentTabId = "tab-nature";
+  let activeChapterFilter = null;
+  let currentImagesArray = [];
+
+  // Function to load HTML from Google Drive
+  function loadFromGoogleDrive(imageItem) {
+    modalTitle.textContent = imageItem.pageTitle || imageItem.title;
+    
+    // Build the preview URL if we have a file ID
+    let previewUrl = null;
+    
+    if (imageItem.drivePreviewUrl) {
+      previewUrl = imageItem.drivePreviewUrl;
+    } else if (imageItem.driveFileId && !imageItem.driveFileId.includes("REPLACE_WITH")) {
+      previewUrl = getDrivePreviewUrl(imageItem.driveFileId);
+    }
+    
+    if (previewUrl) {
+      // Load actual Google Drive HTML file
+      driveIframe.src = previewUrl;
+    } else {
+      // Show demo/instructions (no valid Drive ID provided)
+      driveIframe.srcdoc = demoHtmlContent;
+    }
+    
+    driveModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Function to test custom Drive URL
+  function testCustomDriveUrl() {
+    let url = testDriveUrl.value.trim();
+    if (!url) {
+      alert("Please paste a Google Drive /preview URL");
+      return;
+    }
+    
+    // Ensure it's a preview URL
+    if (!url.includes('/preview')) {
+      if (url.includes('/view')) {
+        url = url.replace('/view', '/preview');
+      } else if (url.includes('/file/d/')) {
+        // Extract file ID and build correct URL
+        const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+        if (match) {
+          url = `https://drive.google.com/file/d/${match[1]}/preview`;
+        }
+      }
+    }
+    
+    modalTitle.textContent = "Custom Google Drive Page";
+    driveIframe.src = url;
+    driveModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDriveModal() {
+    driveModal.classList.remove('active');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      if (!driveModal.classList.contains('active')) {
+        driveIframe.src = 'about:blank';
+      }
+    }, 300);
+  }
+
+  // Make close function available globally for iframe communication
+  window.closeDriveModal = closeDriveModal;
+
+  function filterImagesByChapter(images, chapterFilter) {
+    if (!chapterFilter) return images;
+    const category = siteData[currentTabId];
+    const selectedChapter = category?.chapters.find(ch => ch.title === chapterFilter);
+    if (!selectedChapter) return images;
+    const keywords = selectedChapter.keywords || [];
+    return images.filter(img => img.tags?.some(tag => keywords.some(kw => tag.toLowerCase().includes(kw.toLowerCase()))));
+  }
+
+  function renderGallery() {
+    if (!currentImagesArray.length) {
+      imageGridContainer.innerHTML = '<div class="empty-message">✨ No images available.</div>';
+      return;
+    }
+    let imagesToShow = activeChapterFilter ? filterImagesByChapter(currentImagesArray, activeChapterFilter) : currentImagesArray;
+    if (!imagesToShow.length) {
+      imageGridContainer.innerHTML = `<div class="empty-message">🔍 No images match "${activeChapterFilter}"</div>`;
+      filterIndicator.innerHTML = `🎯 Filtered: ${activeChapterFilter}`;
+      return;
+    }
+    imageGridContainer.innerHTML = '';
+    imagesToShow.forEach(img => {
+      const card = document.createElement('div');
+      card.className = 'image-panel';
+      card.addEventListener('click', () => loadFromGoogleDrive(img));
+      card.innerHTML = `
+        <div class="img-container">
+          <img src="${img.imgUrl}" alt="${img.title}" loading="lazy">
+        </div>
+        <div class="panel-caption">
+          <span class="panel-title">🖼️ ${img.title}</span>
+          <span class="drive-badge-icon">☁️ Drive</span>
+        </div>
       `;
-            } else {
-                // Real Google Drive file
-                modalTitle.textContent = `📄 ${imageItem.pageTitle || imageItem.title}`;
-                const embedUrl = getDriveEmbedUrl(imageItem.driveFileId);
-                driveIframe.src = embedUrl;
-            }
-            driveModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+      imageGridContainer.appendChild(card);
+    });
+    filterIndicator.innerHTML = activeChapterFilter ? `🎯 ${activeChapterFilter}` : `✨ All (${currentImagesArray.length})`;
+    document.querySelector('.middle-gallery').classList.add('fade-in');
+    setTimeout(() => document.querySelector('.middle-gallery').classList.remove('fade-in'), 200);
+  }
 
-        function closeDriveModal() {
-            driveModal.classList.remove('active');
-            document.body.style.overflow = '';
-            // Clear iframe src to stop loading
-            setTimeout(() => {
-                if (!driveModal.classList.contains('active')) {
-                    driveIframe.src = 'about:blank';
-                }
-            }, 300);
-        }
+  function renderChapters() {
+    const category = siteData[currentTabId];
+    if (!category) return;
+    chaptersContainer.innerHTML = '';
+    category.chapters.forEach(ch => {
+      const chDiv = document.createElement('div');
+      chDiv.className = 'chapter-card';
+      if (activeChapterFilter === ch.title) chDiv.classList.add('active-chapter');
+      chDiv.innerHTML = `<div class="chapter-header"><span class="chapter-icon">${ch.emoji}</span><span>${ch.title}</span></div><div class="chapter-desc">${ch.desc || 'Click to filter gallery'}</div>`;
+      chDiv.addEventListener('click', () => {
+        activeChapterFilter = (activeChapterFilter === ch.title) ? null : ch.title;
+        renderChapters();
+        renderGallery();
+      });
+      chaptersContainer.appendChild(chDiv);
+    });
+  }
 
-        function renderGallery() {
-            if (!currentImagesArray.length) {
-                imageGridContainer.innerHTML = '<div class="empty-message">✨ No images available.</div>';
-                return;
-            }
-            let imagesToShow = activeChapterFilter ? filterImagesByChapter(currentImagesArray, activeChapterFilter) : currentImagesArray;
-            if (!imagesToShow.length) {
-                imageGridContainer.innerHTML = `<div class="empty-message">🔍 No images match "${activeChapterFilter}". Try another chapter.</div>`;
-                filterIndicator.innerHTML = `🎯 Filtered by: ${activeChapterFilter}`;
-                return;
-            }
-            imageGridContainer.innerHTML = '';
-            imagesToShow.forEach(img => {
-                const card = document.createElement('div');
-                card.className = 'image-panel';
-                card.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    openDrivePage(img);
-                });
-                const imgDiv = document.createElement('div');
-                imgDiv.className = 'img-container';
-                const imageElem = document.createElement('img');
-                imageElem.src = img.imgUrl;
-                imageElem.alt = img.alt || img.title;
-                imageElem.loading = 'lazy';
-                imgDiv.appendChild(imageElem);
-                const captionDiv = document.createElement('div');
-                captionDiv.className = 'panel-caption';
-                captionDiv.innerHTML = `<span class="panel-title">🖼️ ${img.title}</span><span class="read-badge drive-badge-icon">📁 Drive</span>`;
-                card.appendChild(imgDiv);
-                card.appendChild(captionDiv);
-                imageGridContainer.appendChild(card);
-            });
-            filterIndicator.innerHTML = activeChapterFilter ? `🎯 Filtered: ${activeChapterFilter}` : `✨ All images (${currentImagesArray.length})`;
-            document.getElementById('middleGallery').classList.add('fade-in');
-            setTimeout(() => document.getElementById('middleGallery').classList.remove('fade-in'), 220);
-        }
+  function switchTab(tabId) {
+    currentTabId = tabId;
+    activeChapterFilter = null;
+    tabBtns.forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId));
+    currentImagesArray = [...(siteData[currentTabId]?.images || [])];
+    renderChapters();
+    renderGallery();
+  }
 
-        function renderChapters() {
-            const category = siteData[currentTabId];
-            if (!category) return;
-            chaptersContainer.innerHTML = '';
-            category.chapters.forEach(ch => {
-                const chDiv = document.createElement('div');
-                chDiv.className = 'chapter-card';
-                if (activeChapterFilter === ch.title) chDiv.classList.add('active-chapter');
-                chDiv.innerHTML = `<div class="chapter-header"><span class="chapter-icon">${ch.emoji}</span><span>${ch.title}</span></div><div class="chapter-desc">${ch.description}</div>`;
-                chDiv.addEventListener('click', () => {
-                    activeChapterFilter = (activeChapterFilter === ch.title) ? null : ch.title;
-                    renderChapters();
-                    renderGallery();
-                });
-                chaptersContainer.appendChild(chDiv);
-            });
-        }
-
-        function switchTab(tabId) {
-            currentTabId = tabId;
-            activeChapterFilter = null;
-            tabBtns.forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId));
-            currentImagesArray = [...(siteData[currentTabId]?.images || [])];
-            renderChapters();
-            renderGallery();
-        }
-
-        resetFilterBtn.addEventListener('click', () => {
-            activeChapterFilter = null;
-            renderChapters();
-            renderGallery();
-        });
-
-        tabBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
-        closeModalBtn.addEventListener('click', closeDriveModal);
-        driveModal.addEventListener('click', (e) => { if (e.target === driveModal) closeDriveModal(); });
-        homeLogo.addEventListener('click', () => switchTab('tab-nature'));
-
-        switchTab('tab-nature');
-    </script>
+  resetFilterBtn.addEventListener('click', () => {
+    activeChapterFilter = null;
+    renderChapters();
+    renderGallery();
+  });
+  
+  tabBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
+  closeModalBtn.addEventListener('click', closeDriveModal);
+  driveModal.addEventListener('click', (e) => { if (e.target === driveModal) closeDriveModal(); });
+  homeLogo.addEventListener('click', () => switchTab('tab-nature'));
+  testDriveBtn.addEventListener('click', testCustomDriveUrl);
+  
+  switchTab('tab-nature');
+</script>
 </body>
-
 </html>
