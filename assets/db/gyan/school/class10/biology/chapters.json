@@ -1,0 +1,14 @@
+{
+    "id": "BICH001",
+    "title": "biology chapters",
+    "categories": [
+        {
+            "id": "chapter01",
+            "title": "Nutrition",
+            "description": "This chapter covers the processes of nutrition in plants and animals, including photosynthesis, the human digestive system, vitamins, minerals, and related disorders.",
+            "img": "",
+            "fileid": "ch01_topic001",
+            "url": "/school/class10/biology/topics/"
+        }
+    ]
+}
