@@ -638,17 +638,17 @@
    */
   function isUrlConfigured(url) {
     if (!url || typeof url !== 'string') return false;
-    
+    console.log("isUrlConfigured is string");
     // Check if URL is using default placeholder values from sampleGitHubPagesUrls
     const defaultValues = Object.values(sampleGitHubPagesUrls);
     if (defaultValues.includes(url)) return false;
-    
+    console.log("isUrlConfigured is defaultval");
     // Check against common placeholder patterns
     const isPlaceholder = DEFAULT_PATTERNS.some(pattern => 
       url.toLowerCase().includes(pattern.toLowerCase())
     );
-    
     if (isPlaceholder) return false;
+    console.log("isUrlConfigured is placeholder");
     
     // Check if URL looks like a real GitHub Pages URL
     // Valid patterns: *.github.io/* or a custom domain with valid structure
@@ -665,7 +665,7 @@
                            url === "https://username.github.io/repo/pages/urban-skyline.html" ||
                            url === "https://username.github.io/repo/pages/metro-station.html" ||
                            url === "https://username.github.io/repo/pages/design-studio.html";
-    
+    console.log("isUrlConfigured: ", isValidGitHubPages && !isDefaultString);
     return isValidGitHubPages && !isDefaultString;
   }
 
