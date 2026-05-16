@@ -641,7 +641,7 @@
     console.log("isUrlConfigured is string");
     // Check if URL is using default placeholder values from sampleGitHubPagesUrls
     const defaultValues = Object.values(sampleGitHubPagesUrls);
-    if (defaultValues.includes(url)) return false;
+    if (!defaultValues.includes(url)) return false;
     console.log("isUrlConfigured is defaultval");
     // Check against common placeholder patterns
     const isPlaceholder = DEFAULT_PATTERNS.some(pattern => 
