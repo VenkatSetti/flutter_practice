@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>GitHub Pages Gallery | Smart URL Validation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #e8eaed;
+      font-family: 'Google Sans', 'Segoe UI', Roboto, system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    .sites-header {
+      background: white;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      background: #24292f;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .site-title {
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: #202124;
+    }
+
+    .github-pages-badge {
+      background: #24292f;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .main-container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .tabs-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      background: white;
+      border-radius: 32px;
+      padding: 0.5rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 10px 24px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 40px;
+      color: #5f6368;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      background: #f1f3f4;
+    }
+
+    .tab-btn.active {
+      background: #e8f0fe;
+      color: #1a73e8;
+    }
+
+    .dashboard-split {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .middle-gallery {
+      flex: 3;
+      min-width: 260px;
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+      padding: 1.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #ecedef;
+      padding-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .section-header h3 {
+      font-weight: 500;
+      font-size: 1.25rem;
+      color: #202124;
+    }
+
+    .filter-badge {
+      background: #f1f3f4;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      color: #5f6368;
+    }
+
+    .setup-guide {
+      background: #f6f8fa;
+      border-radius: 20px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #d0d7de;
+    }
+
+    .setup-guide h4 {
+      color: #24292f;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .setup-guide code {
+      background: #e8eaed;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.75rem;
+    }
+
+    .setup-guide pre {
+      background: #1e1e2e;
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-size: 0.7rem;
+      margin: 8px 0;
+    }
+
+    .step-card {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 12px;
+      border: 1px solid #e1e4e8;
+    }
+
+    .step-card strong {
+      color: #1a73e8;
+    }
+
+    .url-status {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .url-status.configured {
+      background: #e6f4ea;
+      color: #137333;
+      border-left: 4px solid #34a853;
+    }
+
+    .url-status.default {
+      background: #fef7e0;
+      color: #b45f06;
+      border-left: 4px solid #f9ab00;
+    }
+
+    .url-status.mixed {
+      background: #e8f0fe;
+      color: #1a73e8;
+      border-left: 4px solid #1a73e8;
+    }
+
+    .url-details {
+      margin-top: 8px;
+      font-family: monospace;
+      font-size: 0.7rem;
+      word-break: break-all;
+    }
+
+    /* Image grid */
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .image-panel {
+      background: #ffffff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border: 1px solid #f0f0f0;
+    }
+
+    .image-panel:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(60,64,67,0.2);
+    }
+
+    .img-container {
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #f8f9fa;
+    }
+
+    .img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .image-panel:hover .img-container img {
+      transform: scale(1.03);
+    }
+
+    .panel-caption {
+      padding: 0.9rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-weight: 500;
+      color: #202124;
+      font-size: 0.9rem;
+    }
+
+    .host-badge {
+      font-size: 0.65rem;
+      padding: 3px 8px;
+      border-radius: 50px;
+      font-weight: 500;
+    }
+
+    .host-badge.live {
+      background: #34a853;
+      color: white;
+    }
+
+    .host-badge.demo {
+      background: #f9ab00;
+      color: #1e1e1e;
+    }
+
+    .right-chapters {
+      flex: 1.2;
+      min-width: 250px;
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+      padding: 1.5rem;
+      align-self: start;
+      position: sticky;
+      top: 1rem;
+    }
+
+    .chapters-title {
+      font-weight: 500;
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+      border-left: 4px solid #1a73e8;
+      padding-left: 14px;
+      color: #202124;
+    }
+
+    .chapters-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .chapter-card {
+      background: #f8f9fa;
+      border-radius: 20px;
+      padding: 0.9rem 1rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: 1px solid #ecedef;
+    }
+
+    .chapter-card:hover {
+      background: #e8f0fe;
+      transform: translateX(6px);
+    }
+
+    .chapter-card.active-chapter {
+      background: #e8f0fe;
+      border-left: 4px solid #1a73e8;
+    }
+
+    .chapter-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .chapter-icon {
+      font-size: 1.3rem;
+    }
+
+    .chapter-desc {
+      font-size: 0.75rem;
+      color: #5f6368;
+      margin-left: 30px;
+    }
+
+    .reset-filter {
+      margin-top: 1.2rem;
+      text-align: center;
+    }
+
+    .reset-btn {
+      background: transparent;
+      border: 1px solid #dadce0;
+      border-radius: 40px;
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      color: #5f6368;
+      cursor: pointer;
+    }
+
+    .reset-btn:hover {
+      background: #f1f3f4;
+      border-color: #1a73e8;
+      color: #1a73e8;
+    }
+
+    .html-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.2s, opacity 0.2s;
+    }
+
+    .html-modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-container {
+      background: white;
+      width: 90%;
+      max-width: 1100px;
+      height: 85vh;
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.25s ease-out;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      padding: 1rem 1.5rem;
+      background: #f8f9fa;
+      border-bottom: 1px solid #ecedef;
+      border-radius: 28px 28px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-weight: 500;
+      color: #202124;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #5f6368;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-modal:hover {
+      background: #e8eaed;
+    }
+
+    .modal-content {
+      flex: 1;
+      overflow: auto;
+    }
+
+    .modal-content iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .sites-footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      padding: 1.5rem;
+      color: #5f6368;
+      font-size: 0.8rem;
+      border-top: 1px solid #dadce0;
+    }
+
+    .fade-in {
+      animation: fadeSlide 0.25s ease-out;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .dashboard-split {
+        flex-direction: column-reverse;
+      }
+      .right-chapters {
+        position: static;
+      }
+    }
+
+    .url-tester {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .url-tester input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #dadce0;
+      border-radius: 24px;
+      font-family: monospace;
+      font-size: 0.75rem;
+    }
+
+    .url-tester button {
+      background: #24292f;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 24px;
+      cursor: pointer;
+    }
+
+    .configured-count {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<header class="sites-header">
+  <div class="logo-area" id="homeLogo">
+    <div class="logo-icon">GH</div>
+    <div class="site-title">GitHub Pages · Smart URL Checker</div>
+    <span class="github-pages-badge">🚀 URL Validation</span>
+  </div>
+  <div class="mock-btn">Live</div>
+</header>
+
+<main class="main-container">
+  <div class="tabs-nav" id="tabNavigation">
+    <button class="tab-btn active" data-tab="tab-nature">🌿 Nature</button>
+    <button class="tab-btn" data-tab="tab-urban">🏙️ Urban</button>
+    <button class="tab-btn" data-tab="tab-creative">🎨 Creative</button>
+  </div>
+
+  <div class="dashboard-split">
+    <div class="middle-gallery">
+      <div class="section-header">
+        <h3>📸 Image Gallery</h3>
+        <div id="filterIndicator" class="filter-badge">✨ All images</div>
+      </div>
+
+      <div class="setup-guide">
+        <h4>🔗 <span>GitHub Pages URL Configuration</span></h4>
+        <p>Each image loads a separate HTML file from GitHub Pages. Update the URLs below to point to your hosted files.</p>
+        
+        <div class="step-card">
+          <strong>📝 Current URLs from sampleGitHubPagesUrls:</strong>
+          <pre id="urlsPreview" style="margin-top: 8px; font-size: 0.7rem;"></pre>
+        </div>
+
+        <div id="urlStatus" class="url-status default">
+          Checking URL configuration...
+        </div>
+
+        <div class="url-tester">
+          <input type="text" id="testUrl" placeholder="Test any GitHub Pages URL">
+          <button id="testBtn">🔗 Test URL</button>
+        </div>
+      </div>
+
+      <div id="imageGridContainer" class="image-grid"></div>
+    </div>
+
+    <div class="right-chapters">
+      <div class="chapters-title">📖 Guide chapters</div>
+      <div id="chaptersListContainer" class="chapters-list"></div>
+      <div class="reset-filter">
+        <button id="resetFilterBtn" class="reset-btn">⟳ Show all images</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="sites-footer">
+  © 2025 | Smart URL Validator checks against sampleGitHubPagesUrls
+</footer>
+
+<div id="htmlModal" class="html-modal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 id="modalTitle">Loading from GitHub Pages...</h3>
+      <button class="close-modal" id="closeModalBtn">✕</button>
+    </div>
+    <div class="modal-content">
+      <iframe id="contentIframe" src="about:blank" title="GitHub Pages Content"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // GITHUB PAGES URL CONFIGURATION
+  // 
+  // UPDATE THESE URLs with your actual GitHub Pages URLs
+  // The isUrlConfigured() function checks if URLs are the default
+  // placeholders or actually customized.
+  // ============================================================
+
+  // 🔴 STEP 1: Replace these placeholder URLs with YOUR actual GitHub Pages URLs
+  // Example: "https://johnsmith.github.io/my-site/pages/forest-canopy.html"
+  const sampleGitHubPagesUrls = {
+    forest: "https://venkatsetti.github.io/flutter_practice/study-site/pages/forest.html",
+    waterfall: "https://venkatsetti.github.io/flutter_practice/study-site/pages/mountain-waterfall.html",
+    mountain: "https://venkatsetti.github.io/flutter_practice/study-site/pages/snowy-peak.html",
+    skyline: "https://venkatsetti.github.io/flutter_practice/study-site/pages/urban-skyline.html",
+    metro: "https://venkatsetti.github.io/flutter_practice/study-site/pages/metro-station.html",
+    design: "https://venkatsetti.github.io/flutter_practice/study-site/pages/design-studio.html"
+  };
+
+  // DEFAULT PLACEHOLDER PATTERNS (used to detect if user hasn't configured yet)
+  const DEFAULT_PATTERNS = [
+    "https://venkatsetti.github.io/flutter_practice/study-site/pages/",
+    "venkatsetti.github.io/flutter_practice/study-site",
+    "/flutter_practice/study-site/pages/",
+    "forest.html"
+  ];
+
+  /**
+   * UPDATED: isUrlConfigured() method - checks if URL is actually customized
+   * by comparing against sampleGitHubPagesUrls values and default patterns
+   * 
+   * A URL is considered "configured" if:
+   * 1. It exists and is not null/undefined
+   * 2. It does NOT contain any default placeholder patterns
+   * 3. It looks like a real GitHub Pages URL (contains .github.io or is a valid custom URL)
+   */
+  function isUrlConfigured(url) {
+    if (!url || typeof url !== 'string') return false;
+    
+    // Check if URL is using default placeholder values from sampleGitHubPagesUrls
+    const defaultValues = Object.values(sampleGitHubPagesUrls);
+    if (defaultValues.includes(url)) return false;
+    
+    // Check against common placeholder patterns
+    const isPlaceholder = DEFAULT_PATTERNS.some(pattern => 
+      url.toLowerCase().includes(pattern.toLowerCase())
+    );
+    
+    if (isPlaceholder) return false;
+    
+    // Check if URL looks like a real GitHub Pages URL
+    // Valid patterns: *.github.io/* or a custom domain with valid structure
+    const isValidGitHubPages = (
+      url.includes('.github.io/') || 
+      (url.startsWith('https://') && url.includes('/pages/')) ||
+      (url.match(/^https?:\/\/[^/]+\/[^/]+\/pages\//))
+    );
+    
+    // Also ensure it's not the exact default string
+    const isDefaultString = url === "https://venkatsetti.github.io/flutter_practice/study-site/pages/forest-canopy.html" ||
+                           url === "https://venkatsetti.github.io/flutter_practice/study-site/pages/mountain-waterfall.html" ||
+                           url === "https://venkatsetti.github.io/flutter_practice/study-site/pages/snowy-peak.html" ||
+                           url === "https://venkatsetti.github.io/flutter_practice/study-site/pages/urban-skyline.html" ||
+                           url === "https://venkatsetti.github.io/flutter_practice/study-site/pages/metro-station.html" ||
+                           url === "https://venkatsetti.github.io/flutter_practice/study-site/pages/design-studio.html";
+    
+    return isValidGitHubPages && !isDefaultString;
+  }
+
+  /**
+   * Get configuration status for all URLs
+   * Returns object with counts and status
+   */
+  function getConfigStatus() {
+    const urls = Object.values(sampleGitHubPagesUrls);
+    const configuredUrls = urls.filter(url => isUrlConfigured(url));
+    const defaultUrls = urls.filter(url => !isUrlConfigured(url));
+    
+    return {
+      total: urls.length,
+      configured: configuredUrls.length,
+      default: defaultUrls.length,
+      configuredUrls: configuredUrls,
+      defaultUrls: defaultUrls,
+      allConfigured: configuredUrls.length === urls.length,
+      noneConfigured: configuredUrls.length === 0
+    };
+  }
+
+  // Update status display with detailed information
+  function updateUrlStatusDisplay() {
+    const status = getConfigStatus();
+    const statusDiv = document.getElementById('urlStatus');
+    const previewDiv = document.getElementById('urlsPreview');
+    
+    // Update preview
+    if (previewDiv) {
+      let previewHtml = '';
+      Object.entries(sampleGitHubPagesUrls).forEach(([key, url]) => {
+        const isConfigured = isUrlConfigured(url);
+        const marker = isConfigured ? '✅' : '⚠️';
+        previewHtml += `${marker} ${key}: ${url.substring(0, 60)}${url.length > 60 ? '...' : ''}\n`;
+      });
+      previewDiv.textContent = previewHtml;
+    }
+    
+    // Update status box
+    if (status.allConfigured) {
+      statusDiv.className = 'url-status configured';
+      statusDiv.innerHTML = `
+        <strong>✅ All URLs Configured!</strong><br>
+        ${status.configured}/${status.total} URLs are customized with your GitHub Pages links.<br>
+        <span class="url-details">Click any image to load your HTML files from GitHub Pages.</span>
+      `;
+    } else if (status.noneConfigured) {
+      statusDiv.className = 'url-status default';
+      statusDiv.innerHTML = `
+        <strong>⚠️ No URLs Configured Yet</strong><br>
+        0/${status.total} URLs have been customized.<br>
+        <span class="url-details">Update the <code>sampleGitHubPagesUrls</code> object (lines 350-357) with your actual GitHub Pages URLs.</span>
+      `;
+    } else {
+      statusDiv.className = 'url-status mixed';
+      statusDiv.innerHTML = `
+        <strong>🔄 Partially Configured</strong><br>
+        ${status.configured}/${status.total} URLs configured, ${status.default} using defaults.<br>
+        <span class="url-details">Update the remaining ${status.default} URLs in sampleGitHubPagesUrls.</span>
+      `;
+    }
+  }
+
+  // Demo HTML content for fallback
+  const getDemoHtml = (title, content, imgUrl, filename, actualUrl) => `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title} | GitHub Pages Demo</title>
+    <style>
+      *{margin:0;padding:0;box-sizing:border-box;}
+      body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:2rem;}
+      .container{max-width:900px;margin:0 auto;background:white;border-radius:32px;padding:2rem;box-shadow:0 20px 40px rgba(0,0,0,0.2);}
+      h1{color:#4a5568;border-left:4px solid #667eea;padding-left:1rem;margin-bottom:1rem;}
+      img{width:100%;border-radius:20px;margin:1rem 0;}
+      .content{margin:1rem 0;line-height:1.6;color:#2d3748;}
+      .info-box{background:#e8f0fe;padding:1rem;border-radius:16px;margin:1rem 0;border-left:4px solid #1a73e8;}
+      .back-btn{background:#667eea;color:white;border:none;padding:12px 28px;border-radius:40px;cursor:pointer;font-size:1rem;margin-top:1rem;}
+      .back-btn:hover{background:#5a67d8;}
+      code{background:#e8eaed;padding:2px 6px;border-radius:6px;font-family:monospace;}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📖 ${title}</h1>
+      <img src="${imgUrl}" alt="${title}">
+      ${actualUrl && isUrlConfigured(actualUrl) ? 
+        `<div class="info-box"><strong>✅ Live from GitHub Pages!</strong><br>This HTML is loading from:<br><code>${actualUrl}</code></div>` :
+        `<div class="info-box"><strong>⚠️ Demo Mode - Update Your URL</strong><br>
+         Update <code>sampleGitHubPagesUrls.${filename.replace('.html', '')}</code> with:<br>
+         <code>https://YOUR_USERNAME.github.io/YOUR_REPO/pages/${filename}</code></div>`
+      }
+      <div class="content">${content}</div>
+      <button class="back-btn" onclick="window.parent.closeHtmlModal()">← Close</button>
+    </div>
+  </body>
+  </html>`;
+
+  // Data structure with URLs from sampleGitHubPagesUrls
+  const siteData = {
+    "tab-nature": {
+      categoryName: "Nature",
+      chapters: [
+        { emoji: "🌲", title: "Forest & Woods", keywords: ["forest"], description: "Ancient trees & ecosystems" },
+        { emoji: "💧", title: "Waterfalls", keywords: ["waterfall"], description: "Cascading waters" },
+        { emoji: "⛰️", title: "Mountains", keywords: ["mountain"], description: "High altitudes" }
+      ],
+      images: [
+        { imgUrl: "https://picsum.photos/id/104/400/260", title: "Forest Canopy Guide", tags: ["forest"], htmlUrl: sampleGitHubPagesUrls.forest, filename: "forest-canopy.html", pageTitle: "The Ancient Forest Canopy", pageContent: "Forests cover 31% of Earth's land, hosting over 80% of terrestrial biodiversity. Old-growth forests store massive amounts of carbon." },
+        { imgUrl: "https://picsum.photos/id/29/400/260", title: "Mountain Waterfalls", tags: ["waterfall"], htmlUrl: sampleGitHubPagesUrls.waterfall, filename: "mountain-waterfall.html", pageTitle: "Cascading Waters", pageContent: "Waterfalls reduce stress and improve well-being. This cascade drops over 200 feet, creating a misty rainbow on sunny days." },
+        { imgUrl: "https://picsum.photos/id/146/400/260", title: "Snowy Mountain Peak", tags: ["mountain"], htmlUrl: sampleGitHubPagesUrls.mountain, filename: "snowy-peak.html", pageTitle: "Alpine Guide", pageContent: "High-altitude ecosystems are fragile. Climate change threatens permanent snow coverage, making conservation crucial." }
+      ]
+    },
+    "tab-urban": {
+      categoryName: "Urban",
+      chapters: [
+        { emoji: "🏙️", title: "Skyscrapers", keywords: ["skyline"], description: "Modern architecture" },
+        { emoji: "🚇", title: "Transit", keywords: ["metro"], description: "Underground networks" }
+      ],
+      images: [
+        { imgUrl: "https://picsum.photos/id/1/400/260", title: "Urban Skyline", tags: ["skyline"], htmlUrl: sampleGitHubPagesUrls.skyline, filename: "urban-skyline.html", pageTitle: "Modern Skylines", pageContent: "Skyscrapers define metropolises. The tallest buildings now incorporate wind turbines and green facades." },
+        { imgUrl: "https://picsum.photos/id/91/400/260", title: "Metro Station", tags: ["metro"], htmlUrl: sampleGitHubPagesUrls.metro, filename: "metro-station.html", pageTitle: "Transit Systems", pageContent: "Subways move millions daily. The world's oldest subway opened in London in 1863." }
+      ]
+    },
+    "tab-creative": {
+      categoryName: "Creative",
+      chapters: [
+        { emoji: "🎨", title: "Design", keywords: ["design"], description: "Creative process" }
+      ],
+      images: [
+        { imgUrl: "https://picsum.photos/id/0/400/260", title: "Design Workspace", tags: ["design"], htmlUrl: sampleGitHubPagesUrls.design, filename: "design-studio.html", pageTitle: "Creative Studio", pageContent: "'Design is thinking made visual' — Saul Bass. Modern studios blend physical and digital tools." }
+      ]
+    }
+  };
+
+  // DOM elements
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const imageGridContainer = document.getElementById('imageGridContainer');
+  const chaptersContainer = document.getElementById('chaptersListContainer');
+  const filterIndicator = document.getElementById('filterIndicator');
+  const resetFilterBtn = document.getElementById('resetFilterBtn');
+  const homeLogo = document.getElementById('homeLogo');
+  const htmlModal = document.getElementById('htmlModal');
+  const contentIframe = document.getElementById('contentIframe');
+  const modalTitle = document.getElementById('modalTitle');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const testUrl = document.getElementById('testUrl');
+  const testBtn = document.getElementById('testBtn');
+
+  let currentTabId = "tab-nature";
+  let activeChapterFilter = null;
+  let currentImagesArray = [];
+
+  function loadHtmlPage(imageItem) {
+    modalTitle.textContent = imageItem.pageTitle || imageItem.title;
+    
+    if (imageItem.htmlUrl && isUrlConfigured(imageItem.htmlUrl)) {
+      contentIframe.src = imageItem.htmlUrl;
+    } else {
+      const demoHtml = getDemoHtml(
+        imageItem.pageTitle || imageItem.title,
+        imageItem.pageContent || "Update your GitHub Pages URL to see your content here.",
+        imageItem.imgUrl,
+        imageItem.filename,
+        imageItem.htmlUrl
+      );
+      contentIframe.srcdoc = demoHtml;
+    }
+    
+    htmlModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function testCustomUrl() {
+    let url = testUrl.value.trim();
+    if (!url) {
+      alert("Please enter a GitHub Pages URL");
+      return;
+    }
+    modalTitle.textContent = "Testing URL";
+    contentIframe.src = url;
+    htmlModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeHtmlModal() {
+    htmlModal.classList.remove('active');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      if (!htmlModal.classList.contains('active')) {
+        contentIframe.src = 'about:blank';
+      }
+    }, 300);
+  }
+
+  window.closeHtmlModal = closeHtmlModal;
+
+  function filterImagesByChapter(images, chapterFilter) {
+    if (!chapterFilter) return images;
+    const category = siteData[currentTabId];
+    const selectedChapter = category?.chapters.find(ch => ch.title === chapterFilter);
+    if (!selectedChapter) return images;
+    const keywords = selectedChapter.keywords || [];
+    return images.filter(img => img.tags?.some(tag => keywords.some(kw => tag.toLowerCase().includes(kw.toLowerCase()))));
+  }
+
+  function renderGallery() {
+    if (!currentImagesArray.length) {
+      imageGridContainer.innerHTML = '<div class="empty-message">✨ No images available.</div>';
+      return;
+    }
+    let imagesToShow = activeChapterFilter ? filterImagesByChapter(currentImagesArray, activeChapterFilter) : currentImagesArray;
+    if (!imagesToShow.length) {
+      imageGridContainer.innerHTML = `<div class="empty-message">🔍 No images match "${activeChapterFilter}"</div>`;
+      filterIndicator.innerHTML = `🎯 Filtered: ${activeChapterFilter}`;
+      return;
+    }
+    imageGridContainer.innerHTML = '';
+    imagesToShow.forEach(img => {
+      const card = document.createElement('div');
+      card.className = 'image-panel';
+      card.addEventListener('click', () => loadHtmlPage(img));
+      const isLive = img.htmlUrl && isUrlConfigured(img.htmlUrl);
+      card.innerHTML = `
+        <div class="img-container"><img src="${img.imgUrl}" alt="${img.title}" loading="lazy"></div>
+        <div class="panel-caption">
+          <span class="panel-title">🖼️ ${img.title}</span>
+          <span class="host-badge ${isLive ? 'live' : 'demo'}">${isLive ? '✓ Live' : 'Demo'}</span>
+        </div>
+      `;
+      imageGridContainer.appendChild(card);
+    });
+    filterIndicator.innerHTML = activeChapterFilter ? `🎯 ${activeChapterFilter}` : `✨ All (${currentImagesArray.length})`;
+    document.querySelector('.middle-gallery').classList.add('fade-in');
+    setTimeout(() => document.querySelector('.middle-gallery').classList.remove('fade-in'), 200);
+  }
+
+  function renderChapters() {
+    const category = siteData[currentTabId];
+    if (!category) return;
+    chaptersContainer.innerHTML = '';
+    category.chapters.forEach(ch => {
+      const chDiv = document.createElement('div');
+      chDiv.className = 'chapter-card';
+      if (activeChapterFilter === ch.title) chDiv.classList.add('active-chapter');
+      chDiv.innerHTML = `<div class="chapter-header"><span class="chapter-icon">${ch.emoji}</span><span>${ch.title}</span></div><div class="chapter-desc">${ch.description}</div>`;
+      chDiv.addEventListener('click', () => {
+        activeChapterFilter = (activeChapterFilter === ch.title) ? null : ch.title;
+        renderChapters();
+        renderGallery();
+      });
+      chaptersContainer.appendChild(chDiv);
+    });
+  }
+
+  function switchTab(tabId) {
+    currentTabId = tabId;
+    activeChapterFilter = null;
+    tabBtns.forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId));
+    currentImagesArray = [...(siteData[currentTabId]?.images || [])];
+    renderChapters();
+    renderGallery();
+    updateUrlStatusDisplay();
+  }
+
+  resetFilterBtn.addEventListener('click', () => {
+    activeChapterFilter = null;
+    renderChapters();
+    renderGallery();
+  });
+  
+  tabBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
+  closeModalBtn.addEventListener('click', closeHtmlModal);
+  htmlModal.addEventListener('click', (e) => { if (e.target === htmlModal) closeHtmlModal(); });
+  homeLogo.addEventListener('click', () => switchTab('tab-nature'));
+  testBtn.addEventListener('click', testCustomUrl);
+  
+  updateUrlStatusDisplay();
+  switchTab('tab-nature');
+</script>
+</body>
+</html>
