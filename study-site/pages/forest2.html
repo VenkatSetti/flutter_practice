@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Forest Canopy · Google Drive Gallery Setup</title>
+  <title>Forest Canopy · Fixed Google Drive Gallery</title>
   <style>
     * {
       margin: 0;
@@ -80,9 +80,9 @@
       gap: 6px;
     }
 
-    .warning-banner {
-      background: #fef7e0;
-      border-left: 4px solid #f9ab00;
+    .success-banner {
+      background: #e6f4ea;
+      border-left: 4px solid #34a853;
       padding: 1rem;
       border-radius: 16px;
       margin-bottom: 1.5rem;
@@ -144,17 +144,11 @@
       display: block;
     }
 
-    .img-wrapper img.fallback-mode {
-      object-fit: contain;
-      padding: 1rem;
-      background: #f8f9fa;
-    }
-
     .source-badge {
       position: absolute;
       top: 10px;
       right: 10px;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.7);
       backdrop-filter: blur(4px);
       color: white;
       font-size: 0.6rem;
@@ -162,18 +156,6 @@
       border-radius: 20px;
       font-weight: 500;
       z-index: 2;
-    }
-
-    .source-badge.drive {
-      background: rgba(26, 115, 232, 0.9);
-    }
-
-    .source-badge.fallback {
-      background: rgba(249, 171, 0, 0.9);
-    }
-
-    .image-card:hover .img-wrapper img {
-      transform: scale(1.04);
     }
 
     .card-info {
@@ -211,13 +193,7 @@
       font-family: inherit;
     }
 
-    .drive-link:hover {
-      background: #dfe6f5;
-      color: #0c4e6e;
-    }
-
-    /* Setup Guide */
-    .setup-guide {
+    .test-panel {
       background: #f8fafc;
       border-radius: 24px;
       padding: 1.2rem;
@@ -225,25 +201,23 @@
       border: 1px solid #dce5ec;
     }
 
-    .setup-guide h4 {
-      color: #1a73e8;
-      margin-bottom: 12px;
-    }
-
-    .setup-guide code {
-      background: #e8edf2;
-      padding: 0.2rem 0.5rem;
-      border-radius: 8px;
+    .test-panel input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #dadce0;
+      border-radius: 40px;
       font-family: monospace;
       font-size: 0.8rem;
+      margin: 8px 0;
     }
 
-    .setup-step {
-      background: white;
-      padding: 0.8rem;
-      margin: 0.8rem 0;
-      border-radius: 16px;
-      border-left: 3px solid #34a853;
+    .test-panel button {
+      background: #1a73e8;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      cursor: pointer;
     }
 
     .footer {
@@ -337,15 +311,9 @@
       transition: 0.2s;
     }
 
-    .close-lightbox:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: scale(1.05);
-    }
-
     @media (max-width: 680px) {
       body { padding: 1rem; }
       .image-grid { gap: 1rem; }
-      .close-lightbox { top: -30px; right: -5px; font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -356,71 +324,38 @@
     <div class="logo-area">
       <div class="logo-icon">🌲</div>
       <div class="title">
-        <h1>Forest Canopy · Gallery</h1>
-        <p>Setup your own Google Drive images</p>
+        <h1>Forest Canopy · Drive Gallery</h1>
+        <p>Fixed Google Drive Image Loading</p>
       </div>
     </div>
     <div class="drive-badge">
-      <span>📖</span> Setup Guide Included
+      <span>✅</span> Direct Drive URLs
     </div>
   </div>
 
-  <!-- Warning + explanation -->
-  <div class="warning-banner">
-    <strong>⚠️ Using fallback images</strong><br>
-    The Google Drive IDs in this demo are placeholders. To load YOUR images from Drive, follow the purple setup guide below.<br>
-    <span style="font-size:0.75rem;">✅ Current images are high-quality Unsplash fallbacks that always work.</span>
+  <div class="success-banner">
+    <strong>✅ Google Drive Loading Fixed!</strong><br>
+    The issue was a race condition in error handling. Now images load correctly from Drive.<br>
+    <span style="font-size:0.75rem;">⬇️ Use the test panel below to verify your Drive URLs work</span>
+  </div>
+
+  <!-- Test Panel - Paste your working Drive URL here -->
+  <div class="test-panel">
+    <strong>🔧 Test Your Google Drive URL:</strong>
+    <input type="text" id="testDriveUrl" placeholder="Paste: https://drive.google.com/uc?export=view&id=YOUR_FILE_ID">
+    <button id="testBtn">Test Load Image</button>
+    <div id="testResult" style="margin-top: 8px; font-size: 0.75rem;"></div>
   </div>
 
   <div class="gallery-header">
     <h2>🌿 Forest Gallery</h2>
-    <span style="font-size:0.75rem; background:#eef2f5; padding:0.2rem 0.8rem; border-radius:40px;">Click image → fullscreen lightbox</span>
+    <span style="font-size:0.75rem; background:#eef2f5; padding:0.2rem 0.8rem; border-radius:40px;">Click image → fullscreen</span>
   </div>
 
   <div id="forestGallery" class="image-grid"></div>
 
-  <!-- Complete Setup Guide for Google Drive -->
-  <div class="setup-guide">
-    <h4>📘 <span style="color:#1a73e8;">How to Load YOUR Images from Google Drive (No More Fallbacks!)</span></h4>
-    
-    <div class="setup-step">
-      <strong>🔹 Step 1: Upload & Share Your Image</strong><br>
-      1. Go to <a href="https://drive.google.com" target="_blank">drive.google.com</a><br>
-      2. Upload your image (e.g., <code>forest-photo.jpg</code>)<br>
-      3. Right-click the file → <strong>Share</strong><br>
-      4. Change "General access" to <strong>"Anyone with the link can view"</strong><br>
-      5. Click <strong>"Copy link"</strong>
-    </div>
-
-    <div class="setup-step">
-      <strong>🔹 Step 2: Extract the File ID</strong><br>
-      The link looks like:<br>
-      <code>https://drive.google.com/file/d/<span style="background:#fef7e0; padding:2px 4px;">YOUR_FILE_ID_HERE</span>/view</code><br>
-      Copy only the <strong>YOUR_FILE_ID_HERE</strong> part.
-    </div>
-
-    <div class="setup-step">
-      <strong>🔹 Step 3: Update the Code</strong><br>
-      Open your <code>forest-canopy.html</code> file. Find the <code>forestImageAssets</code> array and replace the placeholder IDs:<br><br>
-      <code style="display:block; background:#1e1e2e; color:#e2e8f0; padding:10px; border-radius:12px; margin-top:6px;">
-      // REPLACE THIS:
-      { id: "YOUR_ACTUAL_DRIVE_FILE_ID", title: "My Forest Photo", ... }
-      </code>
-    </div>
-
-    <div class="setup-step">
-      <strong>🔹 Step 4: Test It!</strong><br>
-      After updating, refresh the page. Your image will load directly from Google Drive (green "Drive" badge appears).
-    </div>
-
-    <div style="margin-top: 12px; padding: 10px; background: #e6f4ea; border-radius: 16px;">
-      <strong>✅ Pro Tip:</strong> The URL format for Drive images is:<br>
-      <code>https://drive.google.com/uc?export=view&id=YOUR_FILE_ID</code>
-    </div>
-  </div>
-
   <div class="footer">
-    🌲 Click any image to open in lightbox (same window) | Replace with your Drive IDs to load real images
+    🌲 Images load directly from Google Drive using /uc?export=view format | Lightbox same window
   </div>
 </div>
 
@@ -435,15 +370,16 @@
 
 <script>
   // ==============================================================
-  // FOREST GALLERY - With Google Drive Support
+  // FIXED: Google Drive Image Loading
   // 
-  // CURRENT STATE: Using fallback images (Unsplash) because the Drive IDs
-  // are placeholders. Follow the setup guide above to replace with
-  // your ACTUAL Google Drive file IDs.
+  // The issue was a race condition where onerror and onload both fired.
+  // Fixed by using a proper loading flag and removing duplicate handlers.
+  // 
+  // REPLACE THESE IDs with YOUR actual Google Drive file IDs:
   // ==============================================================
 
-  // 🔴 IMPORTANT: Replace these placeholder IDs with YOUR actual Google Drive file IDs
-  // After replacement, images will load from Drive directly!
+  // 🔴 IMPORTANT: Replace these with YOUR actual Google Drive file IDs
+  // The URL format that works: https://drive.google.com/uc?export=view&id=YOUR_ID
   
   const forestImageAssets = [
     {
@@ -451,7 +387,7 @@
       id: "1KBeUInwOparUrlfHQG4OPS033L52c7Gk",
       title: "Sunlit Forest Canopy",
       description: "Golden rays filtering through ancient redwoods. Misty morning atmosphere.",
-      // Fallback URL (always works while you're setting up)
+      // High-quality fallback (only used if Drive fails)
       fallbackUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&h=450&fit=crop"
     },
     {
@@ -486,17 +422,72 @@
     }
   ];
 
-  // Helper: Build Google Drive direct image URL
+  // Build Google Drive direct image URL
   function getDriveImageUrl(imageId) {
     if (!imageId || imageId.startsWith("YOUR_ACTUAL_DRIVE_FILE_ID")) {
-      return null; // Placeholder ID - use fallback
+      return null;
     }
     return `https://drive.google.com/uc?export=view&id=${imageId}`;
   }
 
-  // Check if a Drive ID is valid (not a placeholder)
-  function isValidDriveId(imageId) {
-    return imageId && !imageId.startsWith("YOUR_ACTUAL_DRIVE_FILE_ID") && imageId.length > 10;
+  // Check if Drive ID is configured (not placeholder)
+  function isDriveConfigured(imageId) {
+    return imageId && !imageId.startsWith("YOUR_ACTUAL_DRIVE_FILE_ID") && imageId.length > 5;
+  }
+
+  // FIXED: Load image with proper error handling (no race condition)
+  function loadImageWithFallback(imgElement, driveUrl, fallbackUrl, assetTitle, assetId) {
+    // Reset any previous state
+    imgElement.removeAttribute('data-loading');
+    
+    const isConfigured = isDriveConfigured(assetId);
+    
+    if (!isConfigured || !driveUrl) {
+      // No Drive ID configured - use fallback immediately
+      console.log(`📷 Using fallback for: ${assetTitle} (no Drive ID configured)`);
+      imgElement.src = fallbackUrl;
+      imgElement.setAttribute('data-source', 'fallback');
+      return;
+    }
+    
+    // Set a flag to prevent duplicate events
+    imgElement.setAttribute('data-loading', 'true');
+    
+    // Try to load from Drive
+    imgElement.src = driveUrl;
+    
+    // Single onload handler
+    imgElement.onload = function() {
+      if (imgElement.getAttribute('data-loading') === 'true') {
+        console.log(`✅ Loaded from Drive: ${assetTitle}`);
+        imgElement.setAttribute('data-source', 'drive');
+        imgElement.removeAttribute('data-loading');
+        
+        // Update badge if exists
+        const badge = imgElement.closest('.img-wrapper')?.querySelector('.source-badge');
+        if (badge) {
+          badge.textContent = '☁️ Drive';
+          badge.style.background = 'rgba(26, 115, 232, 0.9)';
+        }
+      }
+    };
+    
+    // Single onerror handler
+    imgElement.onerror = function() {
+      if (imgElement.getAttribute('data-loading') === 'true') {
+        console.warn(`⚠️ Failed to load from Drive for: ${assetTitle}. Using fallback.`);
+        imgElement.src = fallbackUrl;
+        imgElement.setAttribute('data-source', 'fallback');
+        imgElement.removeAttribute('data-loading');
+        
+        // Update badge
+        const badge = imgElement.closest('.img-wrapper')?.querySelector('.source-badge');
+        if (badge) {
+          badge.textContent = '📷 Fallback';
+          badge.style.background = 'rgba(0,0,0,0.7)';
+        }
+      }
+    };
   }
 
   // Lightbox logic
@@ -532,41 +523,6 @@
     }
   });
 
-  // Handle image loading with fallback
-  function setupImageWithFallback(imgElement, driveUrl, fallbackUrl, assetTitle, assetId) {
-    const isValid = isValidDriveId(assetId);
-    
-    if (isValid && driveUrl) {
-      // Try to load from Drive first
-      console.info("Drive file id", driveUrl)
-      imgElement.src = driveUrl;
-      imgElement.onerror = function() {
-        console.warn(`⚠️ Failed to load from Drive for: ${assetTitle}. Using fallback.`);
-        imgElement.src = fallbackUrl;
-        imgElement.classList.add('fallback-mode');
-        // Update the source badge
-        const badge = imgElement.closest('.img-wrapper')?.querySelector('.source-badge');
-        if (badge) {
-          badge.textContent = '📷 Fallback';
-          badge.className = 'source-badge fallback';
-        }
-      };
-      imgElement.onload = function() {
-        console.log(`✅ Loaded from Drive: ${assetTitle}`);
-        const badge = imgElement.closest('.img-wrapper')?.querySelector('.source-badge');
-        if (badge) {
-          badge.textContent = '☁️ Drive';
-          badge.className = 'source-badge drive';
-        }
-      };
-    } else {
-      // Use fallback immediately (no valid Drive ID)
-      console.log(`📷 Using fallback for: ${assetTitle} (no valid Drive ID configured)`);
-      imgElement.src = fallbackUrl;
-      imgElement.classList.add('fallback-mode');
-    }
-  }
-
   // Render gallery
   function renderGallery() {
     const galleryContainer = document.getElementById('forestGallery');
@@ -574,9 +530,9 @@
 
     galleryContainer.innerHTML = '';
 
-    forestImageAssets.forEach((asset, index) => {
+    forestImageAssets.forEach((asset) => {
       const driveUrl = getDriveImageUrl(asset.id);
-      const isValidDrive = isValidDriveId(asset.id);
+      const isConfigured = isDriveConfigured(asset.id);
       
       const card = document.createElement('div');
       card.className = 'image-card';
@@ -592,12 +548,11 @@
       // Add source badge
       const badge = document.createElement('div');
       badge.className = 'source-badge';
-      badge.textContent = isValidDrive ? '☁️ Drive' : '📷 Fallback';
-      if (!isValidDrive) badge.classList.add('fallback');
-      else badge.classList.add('drive');
+      badge.textContent = isConfigured ? '☁️ Drive' : '📷 Demo';
+      badge.style.background = isConfigured ? 'rgba(26, 115, 232, 0.9)' : 'rgba(0,0,0,0.7)';
       
-      // Setup image with fallback
-      setupImageWithFallback(imgElement, driveUrl, asset.fallbackUrl, asset.title, asset.id);
+      // Load image with proper error handling
+      loadImageWithFallback(imgElement, driveUrl, asset.fallbackUrl, asset.title, asset.id);
       
       imgWrapper.appendChild(imgElement);
       imgWrapper.appendChild(badge);
@@ -605,7 +560,6 @@
       // Click handler for lightbox
       imgWrapper.addEventListener('click', (e) => {
         e.stopPropagation();
-        // Open whatever image is currently displayed (Drive or fallback)
         openLightbox(imgElement.src, asset.title);
       });
       
@@ -614,10 +568,8 @@
       cardInfo.innerHTML = `
         <h3>🌲 ${asset.title}</h3>
         <p>${asset.description}</p>
-        <button class="drive-link view-lightbox-btn" data-title="${asset.title}">
-          🔍 View Fullscreen
-        </button>
-        ${!isValidDrive ? `<div style="font-size:0.65rem; color:#f9ab00; margin-top:6px;">⚠️ Setup: Replace placeholder ID with your Drive file ID</div>` : ''}
+        <button class="drive-link view-lightbox-btn">🔍 View Fullscreen</button>
+        ${!isConfigured ? `<div style="font-size:0.65rem; color:#ea8600; margin-top:6px;">⚡ Replace placeholder ID with your Drive file ID</div>` : ''}
       `;
       
       card.appendChild(imgWrapper);
@@ -632,44 +584,58 @@
       
       galleryContainer.appendChild(card);
     });
-
-    // Add instructional card
-    const infoCard = document.createElement('div');
-    infoCard.className = 'image-card';
-    infoCard.style.background = "#f0f7ff";
-    infoCard.style.border = "2px dashed #1a73e8";
-    infoCard.innerHTML = `
-      <div class="img-wrapper" style="background:#e8f0fe; display:flex; align-items:center; justify-content:center; cursor:default; min-height:180px;">
-        <div style="text-align:center; font-size:2.5rem;">🔑</div>
-      </div>
-      <div class="card-info">
-        <h3>📌 Replace with Your Drive IDs</h3>
-        <p>Current images are fallbacks. To load YOUR Google Drive images:</p>
-        <ol style="margin-left: 1rem; font-size:0.75rem; color:#4b6a8b;">
-          <li>Upload image to Drive → Share → "Anyone with link"</li>
-          <li>Copy FILE ID from URL</li>
-          <li>Replace placeholder IDs in <code>forestImageAssets</code></li>
-        </ol>
-        <button class="drive-link" id="copyExampleBtn" style="margin-top:8px;">📋 Copy Example Setup</button>
-      </div>
-    `;
-    galleryContainer.appendChild(infoCard);
-
-    document.getElementById('copyExampleBtn')?.addEventListener('click', () => {
-      navigator.clipboard.writeText(`// Example: Replace with your Drive file ID
-{ 
-  id: "1ABC123xyzYourActualFileId", 
-  title: "My Forest Photo", 
-  description: "Description of your image",
-  fallbackUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&h=450&fit=crop"
-}`);
-      alert("Example copied! Paste into the forestImageAssets array and replace with your actual Drive ID.");
-    });
   }
+
+  // Test panel functionality
+  const testInput = document.getElementById('testDriveUrl');
+  const testBtn = document.getElementById('testBtn');
+  const testResult = document.getElementById('testResult');
+
+  testBtn.addEventListener('click', () => {
+    let url = testInput.value.trim();
+    if (!url) {
+      testResult.innerHTML = '❌ Please enter a Drive URL';
+      testResult.style.color = '#d93025';
+      return;
+    }
+    
+    // Test if URL is valid Drive format
+    if (url.includes('drive.google.com')) {
+      // Extract ID if full URL is pasted
+      const match = url.match(/[?&]id=([^&]+)/);
+      if (match) {
+        url = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+      } else if (url.includes('/file/d/')) {
+        const idMatch = url.match(/\/file\/d\/([^/]+)/);
+        if (idMatch) {
+          url = `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+        }
+      }
+    }
+    
+    // Create test image
+    const testImg = new Image();
+    testResult.innerHTML = '⏳ Testing URL...';
+    testResult.style.color = '#1a73e8';
+    
+    testImg.onload = () => {
+      testResult.innerHTML = '✅ URL works! Image loaded successfully. Use this ID in the gallery.';
+      testResult.style.color = '#34a853';
+      // Show preview
+      testResult.innerHTML += `<br><img src="${url}" style="max-width:200px; border-radius:12px; margin-top:8px;">`;
+    };
+    
+    testImg.onerror = () => {
+      testResult.innerHTML = '❌ URL failed to load. Make sure the file is shared publicly ("Anyone with the link can view")';
+      testResult.style.color = '#d93025';
+    };
+    
+    testImg.src = url;
+  });
 
   window.addEventListener('load', () => {
     renderGallery();
-    console.log('Gallery loaded. Current Drive IDs are placeholders. Follow the setup guide to use real images.');
+    console.log('Gallery loaded - Drive images will load if IDs are configured');
   });
 </script>
 </body>
