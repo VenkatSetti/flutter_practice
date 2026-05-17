@@ -538,6 +538,7 @@
     
     if (isValid && driveUrl) {
       // Try to load from Drive first
+      console.info("Drive file id", driveUrl)
       imgElement.src = driveUrl;
       imgElement.onerror = function() {
         console.warn(`⚠️ Failed to load from Drive for: ${assetTitle}. Using fallback.`);
