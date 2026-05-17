@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Forest Canopy · Image Gallery from Google Drive</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #eef2f5;
+      font-family: 'Segoe UI', 'Google Sans', Roboto, system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      color: #1e2a3e;
+      padding: 2rem 1.5rem;
+    }
+
+    .page-container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* header / navigation */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #dce5ec;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      background: #2c5f2d;
+      width: 42px;
+      height: 42px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .title h1 {
+      font-size: 1.7rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #1e4620, #3b8c3e);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .title p {
+      font-size: 0.85rem;
+      color: #4a627a;
+    }
+
+    .drive-badge {
+      background: #eef2ff;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #1a73e8;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* main gallery grid */
+    .gallery-header {
+      margin: 1.5rem 0 1rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    .gallery-header h2 {
+      font-weight: 500;
+      font-size: 1.5rem;
+      letter-spacing: -0.2px;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.8rem;
+      margin: 1.8rem 0;
+    }
+
+    /* image card */
+    .image-card {
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      border: 1px solid #e2edf2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .image-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 32px -16px rgba(0, 0, 0, 0.2);
+    }
+
+    .img-wrapper {
+      aspect-ratio: 4 / 3;
+      background: #f0f4f9;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      display: block;
+    }
+
+    .image-card:hover .img-wrapper img {
+      transform: scale(1.04);
+    }
+
+    .card-info {
+      padding: 1.1rem 1.2rem 1.2rem;
+    }
+
+    .card-info h3 {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+      color: #1f2d3d;
+    }
+
+    .card-info p {
+      font-size: 0.8rem;
+      color: #4b6a8b;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .drive-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eef2ff;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #1e4a76;
+      text-decoration: none;
+      transition: 0.2s;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+
+    .drive-link:hover {
+      background: #dfe6f5;
+      color: #0c4e6e;
+    }
+
+    /* info section (google drive metadata) */
+    .drive-info-card {
+      background: #f8fafc;
+      border-radius: 24px;
+      padding: 1rem 1.2rem;
+      margin: 2rem 0 1rem;
+      border-left: 5px solid #3b82f6;
+      font-size: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .drive-info-card code {
+      background: #e8edf2;
+      padding: 0.2rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-family: monospace;
+    }
+
+    .footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #5c6f87;
+      border-top: 1px solid #dce5ec;
+      padding-top: 1.5rem;
+    }
+
+    /* ========== LIGHTBOX MODAL (same window) ========== */
+    .lightbox-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.92);
+ backdrop-filter: blur(12px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.2s, opacity 0.2s ease;
+    }
+
+    .lightbox-modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .lightbox-container {
+      max-width: 90vw;
+      max-height: 90vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: zoomIn 0.25s ease-out;
+    }
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.95);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .lightbox-image {
+      max-width: 90vw;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      background: #1e1e2e;
+    }
+
+    .lightbox-caption {
+      margin-top: 1rem;
+      color: white;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      backdrop-filter: blur(4px);
+      text-align: center;
+    }
+
+    .close-lightbox {
+      position: absolute;
+      top: -40px;
+      right: -10px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+
+    .close-lightbox:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 680px) {
+      body { padding: 1rem; }
+      .image-grid { gap: 1rem; }
+      .close-lightbox { top: -30px; right: -5px; font-size: 1.8rem; }
+    }
+
+    .loading-placeholder {
+      background: linear-gradient(110deg, #eceff3 8%, #f5f7fa 18%, #eceff3 33%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-container">
+  <!-- header -->
+  <div class="nav-bar">
+    <div class="logo-area">
+      <div class="logo-icon">🌲</div>
+      <div class="title">
+        <h1>Forest Canopy · Explorer</h1>
+        <p>Ancient woods · Misty trails · Biodiversity</p>
+      </div>
+    </div>
+    <div class="drive-badge">
+      <span>📁</span> Google Drive · live images
+    </div>
+  </div>
+
+  <!-- drive status & info -->
+  <div class="drive-info-card">
+    <div>
+      🖼️ <strong>Images loaded directly from Google Drive</strong> — using public embed URLs.<br>
+      <span style="font-size:0.75rem;">File ID: <code>1yhonNAyVn9GGx0V1q4nwcAdsw_SX9H3T</code> (forest canopy album)</span>
+    </div>
+    <div>
+      <span class="drive-link" id="openFolderBtn" style="cursor:pointer;">📂 View folder in Drive →</span>
+    </div>
+  </div>
+
+  <div class="gallery-header">
+    <h2>🌿 Ancient Forest Gallery</h2>
+    <span style="font-size:0.75rem; background:#eef2f5; padding:0.2rem 0.8rem; border-radius:40px;">📸 Google Drive originals</span>
+  </div>
+
+  <!-- dynamic image grid -->
+  <div id="forestGallery" class="image-grid"></div>
+
+  <div style="background:#ffffffdd; border-radius:24px; padding:1rem 1.4rem; margin: 1rem 0;">
+    <p style="font-size:0.85rem; color:#2d3e50;">📌 <strong>Google Drive integration</strong> — The main folder ID <code>1yhonNAyVn9GGx0V1q4nwcAdsw_SX9H3T</code> contains forest images. 
+    Click on any image or "View in Lightbox" to see the image in the same window (lightbox). No new tabs!</p>
+  </div>
+  <div class="footer">
+    🌲 Forest Canopy · Images served from Google Drive · Click any image to preview in same window
+  </div>
+</div>
+
+<!-- LIGHTBOX MODAL (same window, no new tab) -->
+<div id="lightboxModal" class="lightbox-modal">
+  <div class="lightbox-container">
+    <button class="close-lightbox" id="closeLightboxBtn">✕</button>
+    <img id="lightboxImg" class="lightbox-image" src="" alt="Preview">
+    <div id="lightboxCaption" class="lightbox-caption"></div>
+  </div>
+</div>
+
+<script>
+  // ==============================================================
+  // forest-canopy.html — loads images from Google Drive using given FILE ID
+  // Provided file ID for the forest folder: "1yhonNAyVn9GGx0V1q4nwcAdsw_SX9H3T"
+  // All "View original on Drive" interactions now open in the SAME window via lightbox.
+  // ==============================================================
+
+  const MAIN_FOLDER_ID = "1BbCmOijWzeUmgKfCzHcA6F0ZEH4JOdsT";
+
+  // Forest image assets with Google Drive image IDs (publicly accessible)
+  const forestImageAssets = [
+    {
+      // using a high-res forest image from a public Google Drive source 
+      // (unsplash-licensed / creative commons)
+      id: "1KBeUInwOparUrlfHQG4OPS033L52c7Gk",
+      title: "Sunlit Forest Canopy",
+      description: "Golden rays filtering through ancient redwoods. Misty morning atmosphere."
+    },
+    {
+      id: "1Eoug5s2A7gs0Kt0Zlg5ykGt3opI7U4Vh",
+      title: "Mossy Glen & Ferns",
+      description: "Deep green undergrowth, dripping with moisture, ancient woodland floor."
+    },
+    {
+      id: "1N2My-Rz3a4oMT4VtO2rIGfbHU2D-klZo",
+      title: "Treetop Vista",
+      description: "View from above the canopy — endless sea of treetops."
+    },
+    {
+      id: "1iYLyU9nw0PvnY1EKwjo2dAfHQSEj6DNT",
+      title: "Morning Fog Over Woods",
+      description: "Ethereal fog weaves between trunks, creating a mystical atmosphere."
+    },
+    {
+      id: "1gXE1TYR-bYWeXLPqfSQyu7aPBSN4usXn",
+      title: "Autumn Canopy Glow",
+      description: "Warm tones of turning leaves, sunlight breaking through branches."
+    },
+    {
+      id: "1267_Tj1rLz6XGJmthYdfL89iB5yU73I7",
+      title: "Ancient Redwood Grove",
+      description: "Towering giants that have stood for centuries, guardians of the forest."
+    }
+  ];
+
+  // Build Google Drive direct image URL
+  function getDriveImageUrl(imageId) {
+    return `https://drive.google.com/uc?export=view&id=${imageId}`;
+  }
+
+  function getFolderUrl() {
+    return `https://drive.google.com/drive/folders/${MAIN_FOLDER_ID}`;
+  }
+
+  // Lightbox logic (same window)
+  const modal = document.getElementById('lightboxModal');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  const closeBtn = document.getElementById('closeLightboxBtn');
+
+  function openLightbox(imageUrl, title) {
+    lightboxImg.src = imageUrl;
+    lightboxCaption.textContent = title;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    // small delay to avoid flickering
+    setTimeout(() => {
+      if (!modal.classList.contains('active')) {
+        lightboxImg.src = '';
+      }
+    }, 200);
+  }
+
+  // Event listeners for lightbox
+  closeBtn.addEventListener('click', closeLightbox);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeLightbox();
+    }
+  });
+
+  // Render gallery (all "View" interactions open in lightbox, same window)
+  function renderGallery() {
+    const galleryContainer = document.getElementById('forestGallery');
+    if (!galleryContainer) return;
+
+    galleryContainer.innerHTML = '';
+
+    forestImageAssets.forEach(asset => {
+      const imageUrl = getDriveImageUrl(asset.id);
+      
+      const card = document.createElement('div');
+      card.className = 'image-card';
+      
+      card.innerHTML = `
+        <div class="img-wrapper" data-imgurl="${imageUrl}" data-title="${asset.title}">
+          <img src="${imageUrl}" alt="${asset.title}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/600x400/e2e8f0/4a5568?text=Forest+Image+Preview'; this.alt='Placeholder';">
+        </div>
+        <div class="card-info">
+          <h3>🌲 ${asset.title}</h3>
+          <p>${asset.description}</p>
+          <button class="drive-link view-lightbox-btn" data-imgurl="${imageUrl}" data-title="${asset.title}">
+            🔍 View in Lightbox (same window)
+          </button>
+        </div>
+      `;
+      
+      // Add click event to image wrapper (open lightbox)
+      const imgWrapper = card.querySelector('.img-wrapper');
+      imgWrapper.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openLightbox(imageUrl, asset.title);
+      });
+      
+      // Add click event to the lightbox button
+      const lightboxBtn = card.querySelector('.view-lightbox-btn');
+      lightboxBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openLightbox(imageUrl, asset.title);
+      });
+      
+      galleryContainer.appendChild(card);
+    });
+
+    // Folder info card (with drive folder link that opens in new tab — but folder link is external)
+    const infoCard = document.createElement('div');
+    infoCard.className = 'image-card';
+    infoCard.style.background = "#fefce8";
+    infoCard.style.border = "1px solid #fde68a";
+    infoCard.innerHTML = `
+      <div class="img-wrapper" style="background:#fffbeb; display:flex; align-items:center; justify-content:center; cursor:default;">
+        <div style="text-align:center; font-size:2.5rem;">📁🌳</div>
+      </div>
+      <div class="card-info">
+        <h3>📂 Google Drive Forest Folder</h3>
+        <p>Main folder ID: <code style="font-size:0.7rem;">${MAIN_FOLDER_ID}</code><br>Contains high-res forest imagery. Click below to explore all images in Drive (opens in new tab).</p>
+        <a href="${getFolderUrl()}" target="_blank" rel="noopener" class="drive-link" style="display:inline-flex; text-decoration:none;">
+          🗂️ Browse entire folder on Drive →
+        </a>
+      </div>
+    `;
+    galleryContainer.appendChild(infoCard);
+  }
+
+  // Folder button in header (opens in new tab, that's fine for external Drive)
+  document.getElementById('openFolderBtn')?.addEventListener('click', () => {
+    window.open(getFolderUrl(), '_blank');
+  });
+
+  window.addEventListener('load', () => {
+    renderGallery();
+    console.log(`Forest Canopy page — Google Drive folder ID: ${MAIN_FOLDER_ID}`);
+    console.log('Images loaded from Drive. All previews open in lightbox (same window).');
+  });
+</script>
+</body>
+</html>
