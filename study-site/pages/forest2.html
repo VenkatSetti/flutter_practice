@@ -428,7 +428,8 @@
     if (!imageId || imageId.startsWith("YOUR_ACTUAL_DRIVE_FILE_ID")) {
       return null;
     }
-    return `https://drive.google.com/uc?export=view&id=${imageId}`;
+    // return `https://drive.google.com/uc?export=view&id=${imageId}`;
+    return `https://drive.google.com/file/d/${imageId}/preview`;
   }
 
   // Check if Drive ID is configured (not placeholder)
@@ -534,7 +535,7 @@
     forestImageAssets.forEach((asset) => {
       const driveUrl = getDriveImageUrl(asset.id);
       const isConfigured = isDriveConfigured(asset.id);
-      
+      console.info("img id:", driveUrl)
       const card = document.createElement('div');
       card.className = 'image-card';
       
